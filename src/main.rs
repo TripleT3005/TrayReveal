@@ -10,6 +10,8 @@ mod icon;
 mod identity;
 mod instance;
 mod known_folders;
+#[cfg(test)]
+mod language_list;
 mod notify_icons;
 mod paths;
 mod registry;
