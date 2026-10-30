@@ -1,0 +1,137 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      exists: ${{ steps.check.outputs.exists }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Read version
+        id: version
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -n 1)
+          if [ -z "$version" ]; then
+            echo "::error::Cargo.toml has no package version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing release
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" --repo "${{ github.repository }}" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: version
+    if: needs.version.outputs.exists == 'false' || github.event_name == 'pull_request'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal && rustup default stable
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Package
+        shell: bash
+        run: |
+          name="TrayReveal-${{ needs.version.outputs.version }}-windows-x64"
+          mkdir -p "dist/$name"
+          cp target/release/trayreveal.exe "dist/$name/TrayReveal.exe"
+          cp -R lang "dist/$name/lang"
+          cp LICENSE README.md "dist/$name/"
+          cd dist
+          7z a -tzip -bso0 "$name.zip" "$name"
+          sha256sum "$name.zip" > "$name.zip.sha256"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows-x64
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+  release:
+    needs: [version, build]
+    if: github.event_name != 'pull_request' && needs.version.outputs.exists == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+          TAG: ${{ needs.version.outputs.tag }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          cd dist
+          prerelease=""
+          case "$VERSION" in 0.*|*-*) prerelease="--prerelease" ;; esac
+
+          gh release create "$TAG" ./* \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "$TAG" \
+            --generate-notes \
+            $prerelease
+
+          if [ -z "$VT_API_KEY" ]; then
+            echo "::warning::The repository secret VT_API_KEY is not set, so the release has no VirusTotal scan"
+            exit 0
+          fi
+
+          {
+            gh release view "$TAG" --repo "${{ github.repository }}" --json body -q .body
+            echo
+            echo "---"
+            echo
+            echo "### VirusTotal Scan Report"
+            echo "Scanned on: $(date -u +%Y-%m-%d)"
+            echo
+            for archive in *.zip; do
+              [ -e "$archive" ] || continue
+              curl --fail --silent --show-error \
+                --header "x-apikey: $VT_API_KEY" \
+                --form "file=@$archive" \
+                https://www.virustotal.com/api/v3/files > /dev/null
+              hash=$(cut -d ' ' -f 1 "$archive.sha256")
+              echo "- **$archive:** [Scan Report](https://www.virustotal.com/gui/file/$hash)"
+            done
+          } > notes.md
+
+          gh release edit "$TAG" --repo "${{ github.repository }}" --notes-file notes.md
