@@ -1,0 +1,25 @@
+# TrayReveal language file: English
+# Format: key = text. Lines starting with # are comments. {name} and similar placeholders are filled in by the program.
+# Missing texts are shown in English.
+
+language.name = English
+
+menu.mode.off = Off
+menu.mode.new_icons = Show new icons
+menu.mode.all_icons = Always show all icons
+menu.show_all = Show all icons now
+menu.hide_all = Hide all icons now
+menu.exceptions = Exceptions
+menu.exceptions.hint = Checked icons always stay hidden
+menu.exceptions.empty = No tray icons found
+menu.notifications = Notify about new icons
+menu.language = Language
+menu.language.automatic = Automatic
+menu.autostart = Start with Windows
+menu.quit = Quit
+
+notification.revealed.title = Tray icon shown
+notification.revealed.one = {name} is now shown on the taskbar.
+notification.revealed.many = {count} icons are now shown on the taskbar: {names}
+notification.already_running = TrayReveal is already running. Right-click its tray icon for the settings.
+notification.unavailable = The tray icon settings of Windows cannot be read right now. TrayReveal changes nothing until they are available again.

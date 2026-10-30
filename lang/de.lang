@@ -1,0 +1,25 @@
+# TrayReveal-Sprachdatei: Deutsch
+# Format: Schlüssel = Text. Zeilen mit # am Anfang sind Kommentare. Platzhalter wie {name} füllt das Programm aus.
+# Fehlende Texte werden auf Englisch angezeigt.
+
+language.name = Deutsch
+
+menu.mode.off = Aus
+menu.mode.new_icons = Neue Icons einblenden
+menu.mode.all_icons = Immer alle Icons einblenden
+menu.show_all = Jetzt alle Icons einblenden
+menu.hide_all = Jetzt alle Icons ausblenden
+menu.exceptions = Ausnahmen
+menu.exceptions.hint = Angehakte Icons bleiben immer ausgeblendet
+menu.exceptions.empty = Keine Tray-Icons gefunden
+menu.notifications = Hinweis bei neuen Icons
+menu.language = Sprache
+menu.language.automatic = Automatisch
+menu.autostart = Mit Windows starten
+menu.quit = Beenden
+
+notification.revealed.title = Tray-Icon eingeblendet
+notification.revealed.one = {name} wird jetzt in der Taskleiste angezeigt.
+notification.revealed.many = {count} Icons werden jetzt in der Taskleiste angezeigt: {names}
+notification.already_running = TrayReveal läuft bereits. Die Einstellungen öffnest du per Rechtsklick auf das Tray-Icon.
+notification.unavailable = Die Tray-Icon-Einstellungen von Windows können gerade nicht gelesen werden. TrayReveal ändert nichts, bis sie wieder verfügbar sind.
