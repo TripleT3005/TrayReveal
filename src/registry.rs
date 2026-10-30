@@ -2,12 +2,12 @@ use std::io;
 use std::ptr;
 
 use windows_sys::Win32::Foundation::{
-    ERROR_FILE_NOT_FOUND, ERROR_MORE_DATA, ERROR_SUCCESS, WIN32_ERROR,
+    ERROR_FILE_NOT_FOUND, ERROR_MORE_DATA, ERROR_SUCCESS, FILETIME, WIN32_ERROR,
 };
 use windows_sys::Win32::System::Registry::{
     HKEY, REG_DWORD, REG_EXPAND_SZ, REG_MULTI_SZ, REG_OPTION_NON_VOLATILE, REG_SAM_FLAGS, REG_SZ,
-    REG_VALUE_TYPE, RegCloseKey, RegCreateKeyExW, RegDeleteValueW, RegEnumKeyExW, RegOpenKeyExW,
-    RegQueryValueExW, RegSetValueExW,
+    REG_VALUE_TYPE, RegCloseKey, RegCreateKeyExW, RegDeleteKeyW, RegDeleteTreeW, RegDeleteValueW,
+    RegEnumKeyExW, RegOpenKeyExW, RegQueryInfoKeyW, RegQueryValueExW, RegSetValueExW,
 };
 
 use crate::wide::{from_wide, to_wide, units_from_bytes};
@@ -51,6 +51,50 @@ impl RegistryKey {
 
     pub fn handle(&self) -> HKEY {
         self.0
+    }
+
+    pub fn last_write_time(&self) -> u64 {
+        let mut time = FILETIME {
+            dwLowDateTime: 0,
+            dwHighDateTime: 0,
+        };
+        let result = unsafe {
+            RegQueryInfoKeyW(
+                self.0,
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                &raw mut time,
+            )
+        };
+        if result == ERROR_SUCCESS {
+            (u64::from(time.dwHighDateTime) << 32) | u64::from(time.dwLowDateTime)
+        } else {
+            0
+        }
+    }
+
+    pub fn delete_subkey(&self, name: &str) -> io::Result<()> {
+        Self::delete_tree(self.0, name)
+    }
+
+    pub fn delete_tree(parent: HKEY, path: &str) -> io::Result<()> {
+        let path = to_wide(path);
+        match unsafe { RegDeleteTreeW(parent, path.as_ptr()) } {
+            ERROR_SUCCESS | ERROR_FILE_NOT_FOUND => {}
+            error => return Err(os_error(error)),
+        }
+        match unsafe { RegDeleteKeyW(parent, path.as_ptr()) } {
+            ERROR_SUCCESS | ERROR_FILE_NOT_FOUND => Ok(()),
+            error => Err(os_error(error)),
+        }
     }
 
     pub fn subkey_names(&self) -> io::Result<Vec<String>> {
@@ -196,7 +240,7 @@ fn bytes(units: &[u16]) -> Vec<u8> {
 // Tests
 #[cfg(test)]
 mod tests {
-    use windows_sys::Win32::System::Registry::{HKEY_CURRENT_USER, KEY_ALL_ACCESS, RegDeleteTreeW};
+    use windows_sys::Win32::System::Registry::{HKEY_CURRENT_USER, KEY_ALL_ACCESS};
 
     use super::*;
 
@@ -204,10 +248,7 @@ mod tests {
 
     impl Drop for TestKey {
         fn drop(&mut self) {
-            let path = to_wide(&self.0);
-            unsafe {
-                RegDeleteTreeW(HKEY_CURRENT_USER, path.as_ptr());
-            }
+            let _ = RegistryKey::delete_tree(HKEY_CURRENT_USER, &self.0);
         }
     }
 
@@ -251,5 +292,22 @@ mod tests {
         let mut names = key.subkey_names().unwrap();
         names.sort();
         assert_eq!(names, ["First", "Second"]);
+        assert!(
+            key.open_subkey("First", KEY_ALL_ACCESS)
+                .unwrap()
+                .last_write_time()
+                > 0
+        );
+    }
+
+    #[test]
+    fn deletes_subkeys_with_their_values() {
+        let (_guard, key) = test_key("delete");
+        let child = RegistryKey::create(key.handle(), "Child", KEY_ALL_ACCESS).unwrap();
+        child.set_dword("Value", 1).unwrap();
+        drop(child);
+        key.delete_subkey("Child").unwrap();
+        key.delete_subkey("Child").unwrap();
+        assert_eq!(key.subkey_names().unwrap(), Vec::<String>::new());
     }
 }

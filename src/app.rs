@@ -546,7 +546,8 @@ fn languages_menu(model: &MenuModel) -> Option<Menu> {
 }
 
 fn app_labels(apps: &[InstalledApp]) -> Vec<String> {
-    apps.iter()
+    let labels: Vec<String> = apps
+        .iter()
         .map(|app| {
             let duplicate = apps
                 .iter()
@@ -558,6 +559,19 @@ fn app_labels(apps: &[InstalledApp]) -> Vec<String> {
                 format!("{} – {}", app.name, app.tooltip)
             } else {
                 app.name.clone()
+            }
+        })
+        .collect();
+    labels
+        .iter()
+        .enumerate()
+        .map(|(index, label)| {
+            let same = |other: &&String| other.eq_ignore_ascii_case(label);
+            if labels.iter().filter(same).count() > 1 {
+                let number = labels[..index].iter().filter(same).count() + 1;
+                format!("{label} ({number})")
+            } else {
+                label.clone()
             }
         })
         .collect()
@@ -628,6 +642,23 @@ mod tests {
                 "Windows Explorer – Volume",
                 "Windows Explorer – Network",
                 "Steam"
+            ]
+        );
+    }
+
+    #[test]
+    fn numbers_apps_that_cannot_be_told_apart() {
+        let apps = [
+            app("Windows Explorer", ""),
+            app("Windows Explorer", ""),
+            app("Windows Explorer", "Volume"),
+        ];
+        assert_eq!(
+            app_labels(&apps),
+            [
+                "Windows Explorer (1)",
+                "Windows Explorer (2)",
+                "Windows Explorer – Volume"
             ]
         );
     }

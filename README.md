@@ -28,7 +28,9 @@ Start `TrayReveal.exe`. On the first start it only remembers the icons that alre
 
 The menu follows the light or dark mode of the taskbar.
 
-When an app updates into a new versioned folder (for example `app-1.2.3` or a Microsoft Store package), Windows creates a new hidden entry for it. TrayReveal recognizes the same app and keeps your previous choice. Exceptions apply to all versions of an app.
+When an app updates into a new versioned folder (for example `app-1.2.3` or a Microsoft Store package), Windows creates a new hidden entry for it. TrayReveal recognizes the same app and keeps your previous choice. Exceptions apply to all versions of an app. If several older versions exist, the one changed last counts.
+
+Entries whose program has been missing for three days in a row are removed from the Windows tray settings, so old versions do not pile up. In Off mode nothing is removed.
 
 `TrayReveal.exe --once` applies the current settings once without a tray icon and exits, e.g. for the Task Scheduler.
 
@@ -54,6 +56,8 @@ TrayReveal is written in Rust and only depends on the official Windows API bindi
 ```
 cargo build --release
 ```
+
+For tests, `cargo run --example tray_probe -- "Probe" 60` shows a test tray icon for 60 seconds. Copied into folders such as `app-1.0.0` and `app-1.0.1`, it simulates app updates.
 
 A release is created automatically when a new version in `Cargo.toml` reaches `main`.
 
@@ -86,7 +90,9 @@ Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die 
 
 Das Menü folgt dem hellen oder dunklen Modus der Taskleiste.
 
-Wenn sich eine App in einen neuen Ordner mit Versionsnummer aktualisiert (zum Beispiel `app-1.2.3` oder ein Microsoft-Store-Paket), legt Windows dafür einen neuen, ausgeblendeten Eintrag an. TrayReveal erkennt die gleiche App und übernimmt deine bisherige Wahl. Ausnahmen gelten für alle Versionen einer App.
+Wenn sich eine App in einen neuen Ordner mit Versionsnummer aktualisiert (zum Beispiel `app-1.2.3` oder ein Microsoft-Store-Paket), legt Windows dafür einen neuen, ausgeblendeten Eintrag an. TrayReveal erkennt die gleiche App und übernimmt deine bisherige Wahl. Ausnahmen gelten für alle Versionen einer App. Gibt es mehrere ältere Versionen, zählt die zuletzt geänderte.
+
+Einträge, deren Programm drei Tage am Stück fehlt, werden aus den Tray-Einstellungen von Windows entfernt, damit sich alte Versionen nicht ansammeln. Im Modus „Aus“ wird nichts entfernt.
 
 `TrayReveal.exe --once` wendet die aktuellen Einstellungen einmal ohne Tray-Icon an und beendet sich, etwa für die Aufgabenplanung.
 
@@ -112,6 +118,8 @@ TrayReveal ist in Rust geschrieben und hängt nur von den offiziellen Windows-AP
 ```
 cargo build --release
 ```
+
+Für Tests zeigt `cargo run --example tray_probe -- "Probe" 60` für 60 Sekunden ein Test-Tray-Icon an. In Ordner wie `app-1.0.0` und `app-1.0.1` kopiert, simuliert es App-Updates.
 
 Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet.
 

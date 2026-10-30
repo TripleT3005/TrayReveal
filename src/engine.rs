@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 // Types
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -14,6 +14,19 @@ pub struct Entry {
     pub id: String,
     pub key: String,
     pub promoted: Option<bool>,
+    pub updated: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Presence {
+    pub id: String,
+    pub exists: Option<bool>,
+}
+
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct Cleanup {
+    pub delete: Vec<String>,
+    pub missing_since: BTreeMap<String, u64>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -100,12 +113,38 @@ fn predecessor_state(
     known: Option<&BTreeSet<String>>,
 ) -> Option<bool> {
     let known = known?;
-    let mut states = entries
+    entries
         .iter()
         .filter(|other| other.id != entry.id && other.key == entry.key && known.contains(&other.id))
-        .filter_map(|other| other.promoted);
-    let first = states.next()?;
-    Some(states.fold(first, |visible, state| visible || state))
+        .filter(|other| other.promoted.is_some())
+        .max_by_key(|other| other.updated)
+        .and_then(|other| other.promoted)
+}
+
+// Cleanup
+pub fn cleanup(
+    presence: &[Presence],
+    missing_since: &BTreeMap<String, u64>,
+    now: u64,
+    grace_period: u64,
+) -> Cleanup {
+    let mut cleanup = Cleanup::default();
+    for item in presence {
+        let since = match item.exists {
+            Some(false) => missing_since.get(&item.id).copied().unwrap_or(now),
+            Some(true) => continue,
+            None => match missing_since.get(&item.id) {
+                Some(&since) => since,
+                None => continue,
+            },
+        };
+        if item.exists == Some(false) && now.saturating_sub(since) >= grace_period {
+            cleanup.delete.push(item.id.clone());
+        } else {
+            cleanup.missing_since.insert(item.id.clone(), since);
+        }
+    }
+    cleanup
 }
 
 fn is_visible(entry: &Entry) -> bool {
@@ -118,10 +157,22 @@ mod tests {
     use super::*;
 
     fn entry(id: &str, key: &str, promoted: Option<bool>) -> Entry {
+        updated_entry(id, key, promoted, 0)
+    }
+
+    fn updated_entry(id: &str, key: &str, promoted: Option<bool>, updated: u64) -> Entry {
         Entry {
             id: id.into(),
             key: key.into(),
             promoted,
+            updated,
+        }
+    }
+
+    fn presence(id: &str, exists: Option<bool>) -> Presence {
+        Presence {
+            id: id.into(),
+            exists,
         }
     }
 
@@ -193,6 +244,51 @@ mod tests {
         let plan = plan(&entries, Some(&known), Mode::NewIcons, &BTreeSet::new());
         assert_eq!(plan.changes, [change("new", true)]);
         assert_eq!(plan.revealed, Vec::<String>::new());
+    }
+
+    #[test]
+    fn follows_the_most_recently_changed_predecessor() {
+        let known = set(&["1", "2"]);
+        let hidden_last = [
+            updated_entry("1", "a", Some(true), 10),
+            updated_entry("2", "a", Some(false), 20),
+            updated_entry("3", "a", None, 30),
+        ];
+        let plan_hidden = plan(&hidden_last, Some(&known), Mode::NewIcons, &BTreeSet::new());
+        assert_eq!(plan_hidden.changes, Vec::<Change>::new());
+        let shown_last = [
+            updated_entry("1", "a", Some(true), 20),
+            updated_entry("2", "a", Some(false), 10),
+            updated_entry("3", "a", None, 30),
+        ];
+        let plan_shown = plan(&shown_last, Some(&known), Mode::NewIcons, &BTreeSet::new());
+        assert_eq!(plan_shown.changes, [change("3", true)]);
+    }
+
+    #[test]
+    fn deletes_entries_missing_longer_than_the_grace_period() {
+        let missing_since = BTreeMap::from([("old".to_owned(), 100), ("back".to_owned(), 100)]);
+        let presence = [
+            presence("old", Some(false)),
+            presence("recent", Some(false)),
+            presence("back", Some(true)),
+            presence("present", Some(true)),
+        ];
+        let cleanup = cleanup(&presence, &missing_since, 400, 300);
+        assert_eq!(cleanup.delete, ["old"]);
+        assert_eq!(
+            cleanup.missing_since,
+            BTreeMap::from([("recent".to_owned(), 400)])
+        );
+    }
+
+    #[test]
+    fn keeps_waiting_while_presence_is_unknown() {
+        let missing_since = BTreeMap::from([("usb".to_owned(), 100)]);
+        let presence = [presence("usb", None), presence("other", None)];
+        let cleanup = cleanup(&presence, &missing_since, 10_000, 300);
+        assert_eq!(cleanup.delete, Vec::<String>::new());
+        assert_eq!(cleanup.missing_since, missing_since);
     }
 
     #[test]
