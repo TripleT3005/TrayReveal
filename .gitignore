@@ -1,0 +1,6 @@
+# Build output
+/target/
+
+# OS
+Thumbs.db
+desktop.ini
