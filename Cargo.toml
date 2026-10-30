@@ -1,6 +1,6 @@
 [package]
 name = "trayreveal"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.90"
 description = "Keeps Windows 11 tray icons visible by showing new notification area icons automatically"

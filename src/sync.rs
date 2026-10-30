@@ -45,8 +45,8 @@ pub fn set_all(settings: &Settings, promoted: bool) -> io::Result<()> {
     change(|entries| engine::set_all(entries, &settings.exceptions, promoted))
 }
 
-pub fn hide_app(key: &str) -> io::Result<()> {
-    change(|entries| engine::hide_key(entries, key))
+pub fn set_app(key: &str, promoted: bool) -> io::Result<()> {
+    change(|entries| engine::set_key(entries, key, promoted))
 }
 
 fn change(plan: impl FnOnce(&[Entry]) -> Vec<Change>) -> io::Result<()> {

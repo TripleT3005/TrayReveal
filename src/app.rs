@@ -14,7 +14,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     PBT_APMRESUMEAUTOMATIC, PostMessageW, PostQuitMessage, RegisterClassExW,
     RegisterWindowMessageW, SetForegroundWindow, SetTimer, TPM_NONOTIFY, TPM_RETURNCMD,
     TPM_RIGHTBUTTON, TrackPopupMenu, TranslateMessage, WM_APP, WM_CONTEXTMENU, WM_DESTROY, WM_NULL,
-    WM_POWERBROADCAST, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
+    WM_POWERBROADCAST, WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
 };
 
 use crate::autostart;
@@ -22,8 +22,9 @@ use crate::engine::Mode;
 use crate::i18n::{self, Language, Translations};
 use crate::settings::Settings;
 use crate::sync::{self, App as InstalledApp};
+use crate::theme;
 use crate::tray::TrayIcon;
-use crate::wide::to_wide;
+use crate::wide::{from_wide, to_wide};
 
 // Constants
 const WINDOW_CLASS: &str = "TrayReveal.Window";
@@ -135,6 +136,7 @@ pub fn run() -> ExitCode {
         translations,
         unavailable: false,
     };
+    theme::apply();
     crate::watcher::spawn(window, WM_REGISTRY_CHANGED);
     state.synchronize();
     state.tray.add(WM_TRAY);
@@ -225,6 +227,12 @@ unsafe extern "system" fn window_procedure(
             });
             0
         }
+        WM_SETTINGCHANGE => {
+            if is_color_set_change(lparam) {
+                theme::apply();
+            }
+            0
+        }
         WM_POWERBROADCAST => {
             if wparam == PBT_APMRESUMEAUTOMATIC as usize {
                 schedule_synchronization(window);
@@ -245,6 +253,18 @@ unsafe extern "system" fn window_procedure(
         }
         _ => unsafe { DefWindowProcW(window, message, wparam, lparam) },
     }
+}
+
+fn is_color_set_change(lparam: LPARAM) -> bool {
+    if lparam == 0 {
+        return false;
+    }
+    let text = lparam as *const u16;
+    let length = (0..=theme::COLOR_SET_CHANGED.len())
+        .take_while(|&index| unsafe { *text.add(index) } != 0)
+        .count();
+    let units = unsafe { std::slice::from_raw_parts(text, length) };
+    from_wide(units) == theme::COLOR_SET_CHANGED
 }
 
 fn schedule_synchronization(window: HWND) {
@@ -353,13 +373,13 @@ impl State {
     }
 
     fn toggle_exception(&mut self, key: &str) {
-        if self.settings.exceptions.remove(key) {
-            self.save();
-            self.synchronize();
-        } else {
+        let excepted = !self.settings.exceptions.remove(key);
+        if excepted {
             self.settings.exceptions.insert(key.to_owned());
-            self.save();
-            let succeeded = sync::hide_app(key).is_ok();
+        }
+        self.save();
+        if excepted || self.settings.mode != Mode::Off {
+            let succeeded = sync::set_app(key, !excepted).is_ok();
             self.report(succeeded);
         }
     }

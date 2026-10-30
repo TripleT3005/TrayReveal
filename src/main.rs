@@ -15,6 +15,7 @@ mod paths;
 mod registry;
 mod settings;
 mod sync;
+mod theme;
 mod tray;
 mod watcher;
 mod wide;

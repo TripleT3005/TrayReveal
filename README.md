@@ -23,8 +23,10 @@ Start `TrayReveal.exe`. On the first start it only remembers the icons that alre
 - **Show new icons** (default) – every new icon is shown once; if you hide it later in the Windows Settings, it stays hidden
 - **Always show all icons** – keeps every icon visible, except the exceptions
 - **Show all icons now / Hide all icons now** – one-time actions; hiding is not available while all icons are always shown
-- **Exceptions** – checked apps always stay hidden
+- **Exceptions** – checked apps always stay hidden; unchecking shows the app again (except in Off mode)
 - **Notify about new icons**, **Language**, **Start with Windows**, **Quit**
+
+The menu follows the light or dark mode of the taskbar.
 
 When an app updates into a new versioned folder (for example `app-1.2.3` or a Microsoft Store package), Windows creates a new hidden entry for it. TrayReveal recognizes the same app and keeps your previous choice. Exceptions apply to all versions of an app.
 
@@ -79,8 +81,10 @@ Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die 
 - **Neue Icons einblenden** (Standard) – jedes neue Icon wird einmal eingeblendet; blendest du es später in den Windows-Einstellungen aus, bleibt es ausgeblendet
 - **Immer alle Icons einblenden** – hält alle Icons sichtbar, außer den Ausnahmen
 - **Jetzt alle Icons einblenden / ausblenden** – einmalige Aktionen; Ausblenden ist nicht verfügbar, solange immer alle Icons eingeblendet werden
-- **Ausnahmen** – angehakte Apps bleiben immer ausgeblendet
+- **Ausnahmen** – angehakte Apps bleiben immer ausgeblendet; ohne Haken wird die App wieder eingeblendet (außer im Modus „Aus“)
 - **Hinweis bei neuen Icons**, **Sprache**, **Mit Windows starten**, **Beenden**
+
+Das Menü folgt dem hellen oder dunklen Modus der Taskleiste.
 
 Wenn sich eine App in einen neuen Ordner mit Versionsnummer aktualisiert (zum Beispiel `app-1.2.3` oder ein Microsoft-Store-Paket), legt Windows dafür einen neuen, ausgeblendeten Eintrag an. TrayReveal erkennt die gleiche App und übernimmt deine bisherige Wahl. Ausnahmen gelten für alle Versionen einer App.
 

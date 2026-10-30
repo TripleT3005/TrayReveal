@@ -83,13 +83,13 @@ pub fn set_all(entries: &[Entry], exceptions: &BTreeSet<String>, promoted: bool)
         .collect()
 }
 
-pub fn hide_key(entries: &[Entry], key: &str) -> Vec<Change> {
+pub fn set_key(entries: &[Entry], key: &str, promoted: bool) -> Vec<Change> {
     entries
         .iter()
-        .filter(|entry| entry.key == key && is_visible(entry))
+        .filter(|entry| entry.key == key && is_visible(entry) != promoted)
         .map(|entry| Change {
             id: entry.id.clone(),
-            promoted: false,
+            promoted,
         })
         .collect()
 }
@@ -255,12 +255,13 @@ mod tests {
     }
 
     #[test]
-    fn hides_every_entry_of_an_app() {
+    fn changes_every_entry_of_an_app() {
         let entries = [
             entry("1", "a", Some(true)),
             entry("2", "a", None),
             entry("3", "b", Some(true)),
         ];
-        assert_eq!(hide_key(&entries, "a"), [change("1", false)]);
+        assert_eq!(set_key(&entries, "a", false), [change("1", false)]);
+        assert_eq!(set_key(&entries, "a", true), [change("2", true)]);
     }
 }
