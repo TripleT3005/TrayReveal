@@ -1,4 +1,4 @@
-# TrayReveal
+# <img src="docs/logo.svg" alt="" width="40" height="40" align="top"> TrayReveal
 
 [English](#english) · [Deutsch](#deutsch)
 
