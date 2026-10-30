@@ -8,11 +8,29 @@ A tiny tray app for Windows 11 that keeps your notification area icons visible.
 Windows 11 hides every new tray icon behind the `^` overflow menu and no longer offers the old "Always show all icons" checkbox. TrayReveal brings that convenience back: it watches the icon list of the current user and shows new icons right away – or all of them, if you prefer.
 
 ### Installation
-1. Download `TrayReveal-<version>-windows-x64.zip` from [Releases](../../releases).
-2. Extract it, e.g. to `C:\Program Files\TrayReveal` (needs administrator rights once) or to any folder of your choice. Keep the `lang` folder next to `TrayReveal.exe`.
-3. Start `TrayReveal.exe`. The program is not signed, so SmartScreen may warn on the first start: "More info" → "Run anyway".
+Download one of the files from [Releases](../../releases):
 
-Each archive has a `.sha256` file to verify the download, and the release notes link a VirusTotal scan.
+- **Installer** `TrayReveal-<version>-windows-x64-setup.exe` – installs for the current user (default, no administrator rights) or for all users, adds a Start menu entry and optionally starts TrayReveal with Windows. It can be removed under Settings → Apps.
+- **Portable** `TrayReveal-<version>-windows-x64.zip` – extract it to any folder and start `TrayReveal.exe`. Keep the `lang` folder next to the program.
+
+The program is not signed, so SmartScreen may warn on the first start: "More info" → "Run anyway". Each file has a `.sha256` file to verify the download, and the release notes link a VirusTotal scan.
+
+The installer accepts the usual Inno Setup parameters, e.g. for a silent installation:
+
+| Parameter | Effect |
+|---|---|
+| `/CURRENTUSER` | Install for the current user only (default) |
+| `/ALLUSERS` | Install for all users (asks for administrator rights) |
+| `/DIR="C:\Path"` | Installation folder |
+| `/SILENT`, `/VERYSILENT` | Without wizard (with or without progress window) |
+| `/SUPPRESSMSGBOXES` | No message boxes in silent mode |
+| `/TASKS="autostart,desktopicon"` | Selected options; `autostart` starts TrayReveal with Windows for the installing user, `desktopicon` adds a desktop shortcut. Without the parameter, autostart is on and the desktop shortcut off |
+| `/NOICONS` | No Start menu entry |
+| `/LOG="C:\Path\setup.log"` | Write a log file |
+
+Example: `TrayReveal-1.1.0-windows-x64-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /ALLUSERS /TASKS="autostart"`
+
+Settings such as the mode or the language are stored per user and are not set by the installer. Uninstalling removes the program and the autostart entry but keeps the settings in `HKCU\Software\TrayReveal`.
 
 ### Usage
 Start `TrayReveal.exe`. On the first start it only remembers the icons that already exist and changes nothing. Right-click (or left-click) its tray icon for the menu:
@@ -77,11 +95,29 @@ Eine kleine Tray-App für Windows 11, die die Symbole im Infobereich sichtbar h�
 Windows 11 versteckt jedes neue Tray-Icon hinter dem `^`-Überlaufmenü und bietet das frühere Häkchen „Immer alle Symbole anzeigen“ nicht mehr an. TrayReveal bringt diesen Komfort zurück: Es beobachtet die Icon-Liste des aktuellen Benutzers und blendet neue Icons sofort ein – oder auf Wunsch alle.
 
 ### Installation
-1. `TrayReveal-<Version>-windows-x64.zip` unter [Releases](../../releases) herunterladen.
-2. Entpacken, z. B. nach `C:\Program Files\TrayReveal` (braucht einmalig Administratorrechte) oder in einen beliebigen Ordner. Der Ordner `lang` bleibt neben `TrayReveal.exe`.
-3. `TrayReveal.exe` starten. Das Programm ist nicht signiert, deshalb warnt SmartScreen beim ersten Start eventuell: „Weitere Informationen“ → „Trotzdem ausführen“.
+Eine der Dateien unter [Releases](../../releases) herunterladen:
 
-Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die Release-Notizen verlinken einen VirusTotal-Scan.
+- **Installer** `TrayReveal-<Version>-windows-x64-setup.exe` – installiert für den aktuellen Benutzer (Standard, ohne Administratorrechte) oder für alle Benutzer, legt einen Startmenü-Eintrag an und startet TrayReveal auf Wunsch mit Windows. Entfernen lässt es sich unter Einstellungen → Apps.
+- **Portabel** `TrayReveal-<Version>-windows-x64.zip` – in einen beliebigen Ordner entpacken und `TrayReveal.exe` starten. Der Ordner `lang` bleibt neben dem Programm.
+
+Das Programm ist nicht signiert, deshalb warnt SmartScreen beim ersten Start eventuell: „Weitere Informationen“ → „Trotzdem ausführen“. Zu jeder Datei gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die Release-Notizen verlinken einen VirusTotal-Scan.
+
+Der Installer versteht die üblichen Inno-Setup-Parameter, z. B. für eine stille Installation:
+
+| Parameter | Wirkung |
+|---|---|
+| `/CURRENTUSER` | Nur für den aktuellen Benutzer installieren (Standard) |
+| `/ALLUSERS` | Für alle Benutzer installieren (fragt nach Administratorrechten) |
+| `/DIR="C:\Pfad"` | Installationsordner |
+| `/SILENT`, `/VERYSILENT` | Ohne Assistent (mit oder ohne Fortschrittsfenster) |
+| `/SUPPRESSMSGBOXES` | Keine Meldungsfenster bei stiller Installation |
+| `/TASKS="autostart,desktopicon"` | Gewählte Optionen; `autostart` startet TrayReveal für den installierenden Benutzer mit Windows, `desktopicon` legt eine Desktop-Verknüpfung an. Ohne den Parameter ist der Autostart an und die Desktop-Verknüpfung aus |
+| `/NOICONS` | Kein Startmenü-Eintrag |
+| `/LOG="C:\Pfad\setup.log"` | Protokolldatei schreiben |
+
+Beispiel: `TrayReveal-1.1.0-windows-x64-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /ALLUSERS /TASKS="autostart"`
+
+Einstellungen wie Modus oder Sprache gelten pro Benutzer und werden vom Installer nicht gesetzt. Die Deinstallation entfernt das Programm und den Autostart-Eintrag, lässt die Einstellungen in `HKCU\Software\TrayReveal` aber stehen.
 
 ### Bedienung
 `TrayReveal.exe` starten. Beim ersten Start merkt es sich nur die bereits vorhandenen Icons und ändert nichts. Ein Rechtsklick (oder Linksklick) auf das Tray-Icon öffnet das Menü:
