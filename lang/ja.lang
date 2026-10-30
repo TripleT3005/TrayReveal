@@ -22,9 +22,14 @@ menu.language = 言語
 menu.language.automatic = 自動
 menu.autostart = Windows の起動時に開始
 menu.quit = 終了
+menu.undo = 最後の変更を元に戻す
+menu.check_updates = 更新を確認
+menu.update_available = バージョン {version} をダウンロード
 
 notification.revealed.title = アイコンを表示しました
 notification.revealed.one = {name} がタスク バーに表示されるようになりました。
 notification.revealed.many = {count} 個のアイコンがタスク バーに表示されるようになりました: {names}
 notification.already_running = TrayReveal は既に実行中です。設定を開くには、アイコンを右クリックしてください。
 notification.unavailable = 現在、Windows の通知領域のアイコン設定を読み取れません。再び利用できるようになるまで、TrayReveal は何も変更しません。
+notification.update.title = 更新があります
+notification.update.text = TrayReveal {version} が利用可能です。メニューからダウンロードできます。

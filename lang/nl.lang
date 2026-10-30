@@ -22,9 +22,14 @@ menu.language = Taal
 menu.language.automatic = Automatisch
 menu.autostart = Starten met Windows
 menu.quit = Afsluiten
+menu.undo = Laatste wijziging ongedaan maken
+menu.check_updates = Controleren op updates
+menu.update_available = Versie {version} downloaden
 
 notification.revealed.title = Pictogram weergegeven
 notification.revealed.one = {name} wordt nu op de taakbalk weergegeven.
 notification.revealed.many = {count} pictogrammen worden nu op de taakbalk weergegeven: {names}
 notification.already_running = TrayReveal is al actief. Klik met de rechtermuisknop op het pictogram voor de instellingen.
 notification.unavailable = De pictograminstellingen van het Windows-systeemvak kunnen op dit moment niet worden gelezen. TrayReveal wijzigt niets totdat ze weer beschikbaar zijn.
+notification.update.title = Update beschikbaar
+notification.update.text = TrayReveal {version} is beschikbaar. Open het menu om het te downloaden.

@@ -22,9 +22,14 @@ menu.language = Nyelv
 menu.language.automatic = Automatikus
 menu.autostart = Indítás a Windows-zal
 menu.quit = Kilépés
+menu.undo = Utolsó módosítás visszavonása
+menu.check_updates = Frissítések keresése
+menu.update_available = A(z) {version} verzió letöltése
 
 notification.revealed.title = Ikon megjelenítve
 notification.revealed.one = {name} mostantól látható a tálcán.
 notification.revealed.many = {count} ikon mostantól látható a tálcán: {names}
 notification.already_running = A TrayReveal már fut. A beállításokhoz kattintson a jobb gombbal az ikonjára.
 notification.unavailable = A Windows értesítési területének ikonbeállításai jelenleg nem olvashatók. A TrayReveal semmit sem módosít, amíg újra elérhetővé nem válnak.
+notification.update.title = Frissítés érhető el
+notification.update.text = Elérhető a TrayReveal {version}. A letöltéshez nyissa meg a menüt.

@@ -22,9 +22,14 @@ menu.language = ภาษา
 menu.language.automatic = อัตโนมัติ
 menu.autostart = เริ่มพร้อมกับ Windows
 menu.quit = ออก
+menu.undo = เลิกทำการเปลี่ยนแปลงล่าสุด
+menu.check_updates = ตรวจหาการอัปเดต
+menu.update_available = ดาวน์โหลดเวอร์ชัน {version}
 
 notification.revealed.title = แสดงไอคอนแล้ว
 notification.revealed.one = ขณะนี้ {name} แสดงอยู่บนแถบงาน
 notification.revealed.many = ขณะนี้มีไอคอน {count} รายการแสดงอยู่บนแถบงาน: {names}
 notification.already_running = TrayReveal กำลังทำงานอยู่แล้ว คลิกขวาที่ไอคอนเพื่อเปิดการตั้งค่า
 notification.unavailable = ขณะนี้ไม่สามารถอ่านการตั้งค่าไอคอนในพื้นที่แจ้งเตือนของ Windows ได้ TrayReveal จะไม่เปลี่ยนแปลงสิ่งใดจนกว่าการตั้งค่าจะพร้อมใช้งานอีกครั้ง
+notification.update.title = มีการอัปเดต
+notification.update.text = TrayReveal {version} พร้อมใช้งานแล้ว เปิดเมนูเพื่อดาวน์โหลด

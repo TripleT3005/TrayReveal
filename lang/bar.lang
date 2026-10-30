@@ -23,9 +23,14 @@ menu.language = Sproch
 menu.language.automatic = Vo selm
 menu.autostart = Mit Windows startn
 menu.quit = Feierobnd
+menu.undo = Letzte Änderung zruckdrahn
+menu.check_updates = Noch Updates schaugn
+menu.update_available = Version {version} owalodn
 
 notification.revealed.title = Icon ozoagt
 notification.revealed.one = {name} werd jetz in da Taskleistn ozoagt.
 notification.revealed.many = {count} Icons wern jetz in da Taskleistn ozoagt: {names}
 notification.already_running = TrayReveal lafft scho. De Eistellunga findst mit am Rechtsklick aufs Tray-Icon.
 notification.unavailable = De Tray-Icon-Eistellunga vo Windows ko ma grod ned lesn. TrayReveal ändert nix, bis de wieda do san.
+notification.update.title = Update do
+notification.update.text = TrayReveal {version} is do. Zum Owalodn s'Menü aufmachn.

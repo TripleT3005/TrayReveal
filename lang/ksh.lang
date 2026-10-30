@@ -23,9 +23,14 @@ menu.language = Sproch
 menu.language.automatic = Automatisch
 menu.autostart = Met Windows starte
 menu.quit = Fierovend
+menu.undo = Letzte Änderung zoröckdrihe
+menu.check_updates = Noh Updates luure
+menu.update_available = Version {version} eraflade
 
 notification.revealed.title = Icon aanjezeich
 notification.revealed.one = {name} weed jetz en d'r Taskleiß aanjezeich.
 notification.revealed.many = {count} Icons weede jetz en d'r Taskleiß aanjezeich: {names}
 notification.already_running = TrayReveal läuf ald. De Enstellunge fings de met enem Räächsklick op et Tray-Icon.
 notification.unavailable = De Tray-Icon-Enstellunge vun Windows künne jrad nit jelese weede. TrayReveal ändert nix, bes se widder do sin.
+notification.update.title = Update do
+notification.update.text = TrayReveal {version} es do. Zum Eraflade et Menü opmaache.

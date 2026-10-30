@@ -22,9 +22,14 @@ menu.language = Sprache
 menu.language.automatic = Automatisch
 menu.autostart = Mit Windows starten
 menu.quit = Beenden
+menu.undo = Letzte Änderung rückgängig machen
+menu.check_updates = Nach Updates suchen
+menu.update_available = Version {version} herunterladen
 
 notification.revealed.title = Tray-Icon eingeblendet
 notification.revealed.one = {name} wird jetzt in der Taskleiste angezeigt.
 notification.revealed.many = {count} Icons werden jetzt in der Taskleiste angezeigt: {names}
 notification.already_running = TrayReveal läuft bereits. Die Einstellungen öffnest du per Rechtsklick auf das Tray-Icon.
 notification.unavailable = Die Tray-Icon-Einstellungen von Windows können gerade nicht gelesen werden. TrayReveal ändert nichts, bis sie wieder verfügbar sind.
+notification.update.title = Update verfügbar
+notification.update.text = TrayReveal {version} ist verfügbar. Zum Herunterladen das Menü öffnen.

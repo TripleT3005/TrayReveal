@@ -108,3 +108,25 @@ pub fn delete(ids: &[String]) -> io::Result<()> {
     }
     last_error.map_or(Ok(()), Err)
 }
+
+pub fn restore(states: &[(String, Option<bool>)]) -> io::Result<()> {
+    if states.is_empty() {
+        return Ok(());
+    }
+    let settings = RegistryKey::open(HKEY_CURRENT_USER, SETTINGS_PATH, KEY_READ)?;
+    let mut last_error = None;
+    for (id, promoted) in states {
+        let result = settings
+            .open_subkey(id, KEY_SET_VALUE)
+            .and_then(|key| match promoted {
+                Some(promoted) => key.set_dword(IS_PROMOTED, u32::from(*promoted)),
+                None => key.delete_value(IS_PROMOTED),
+            });
+        if let Err(error) = result
+            && error.kind() != io::ErrorKind::NotFound
+        {
+            last_error = Some(error);
+        }
+    }
+    last_error.map_or(Ok(()), Err)
+}

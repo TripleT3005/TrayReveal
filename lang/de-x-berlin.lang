@@ -23,9 +23,14 @@ menu.language = Sprache
 menu.language.automatic = Automatisch
 menu.autostart = Mit Windows starten
 menu.quit = Feierabend
+menu.undo = Letzte Änderung rückjängich machen
+menu.check_updates = Nach Updates kieken
+menu.update_available = Version {version} runterladen
 
 notification.revealed.title = Icon anjezeigt
 notification.revealed.one = {name} wird jetze inna Taskleiste anjezeigt.
 notification.revealed.many = {count} Icons wern jetze inna Taskleiste anjezeigt: {names}
 notification.already_running = TrayReveal looft schon. Die Einstellungen kriegste mit'm Rechtsklick uff't Tray-Icon.
 notification.unavailable = Die Tray-Icon-Einstellungen von Windows kann man jrade nich lesen. TrayReveal ändert nüscht, bis die wieda da sind.
+notification.update.title = Update da
+notification.update.text = TrayReveal {version} is da. Zum Runterladen det Menü uffmachen.

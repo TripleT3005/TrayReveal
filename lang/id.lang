@@ -22,9 +22,14 @@ menu.language = Bahasa
 menu.language.automatic = Otomatis
 menu.autostart = Mulai bersama Windows
 menu.quit = Keluar
+menu.undo = Batalkan perubahan terakhir
+menu.check_updates = Periksa pembaruan
+menu.update_available = Unduh versi {version}
 
 notification.revealed.title = Ikon ditampilkan
 notification.revealed.one = {name} sekarang ditampilkan di bilah tugas.
 notification.revealed.many = {count} ikon sekarang ditampilkan di bilah tugas: {names}
 notification.already_running = TrayReveal sudah berjalan. Klik kanan ikonnya untuk membuka pengaturan.
 notification.unavailable = Pengaturan ikon area notifikasi Windows tidak dapat dibaca saat ini. TrayReveal tidak mengubah apa pun sampai pengaturan tersedia kembali.
+notification.update.title = Pembaruan tersedia
+notification.update.text = TrayReveal {version} tersedia. Buka menu untuk mengunduhnya.

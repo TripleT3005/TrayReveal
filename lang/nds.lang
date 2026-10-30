@@ -23,9 +23,14 @@ menu.language = Spraak
 menu.language.automatic = Automaatsch
 menu.autostart = Mit Windows starten
 menu.quit = Afsluten
+menu.undo = Leste Ännern torüchnehmen
+menu.check_updates = Na Updates kieken
+menu.update_available = Version {version} daalladen
 
 notification.revealed.title = Icon wiest
 notification.revealed.one = {name} warrt nu in de Taskbalken wiest.
 notification.revealed.many = {count} Icons warrt nu in de Taskbalken wiest: {names}
 notification.already_running = TrayReveal löppt al. De Instellen finnst du mit en Rechtsklick op dat Tray-Icon.
 notification.unavailable = De Tray-Icon-Instellen vun Windows köönt jüst nich leest warrn. TrayReveal ännert nix, bit se wedder dor sünd.
+notification.update.title = Update dor
+notification.update.text = TrayReveal {version} is dor. To'n Daalladen dat Menü opmaken.

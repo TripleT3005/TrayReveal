@@ -22,9 +22,14 @@ menu.language = Език
 menu.language.automatic = Автоматично
 menu.autostart = Стартиране с Windows
 menu.quit = Изход
+menu.undo = Отмяна на последната промяна
+menu.check_updates = Проверка за актуализации
+menu.update_available = Изтегляне на версия {version}
 
 notification.revealed.title = Иконата е показана
 notification.revealed.one = {name} вече се показва в лентата на задачите.
 notification.revealed.many = {count} икони вече се показват в лентата на задачите: {names}
 notification.already_running = TrayReveal вече работи. Щракнете с десния бутон върху иконата му за настройките.
 notification.unavailable = Настройките на иконите в областта за уведомяване на Windows не могат да бъдат прочетени в момента. TrayReveal не променя нищо, докато не станат отново достъпни.
+notification.update.title = Налична е актуализация
+notification.update.text = TrayReveal {version} е наличен. Отворете менюто, за да го изтеглите.

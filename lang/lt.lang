@@ -22,9 +22,14 @@ menu.language = Kalba
 menu.language.automatic = Automatiškai
 menu.autostart = Paleisti kartu su Windows
 menu.quit = Išeiti
+menu.undo = Anuliuoti paskutinį pakeitimą
+menu.check_updates = Ieškoti naujinimų
+menu.update_available = Atsisiųsti versiją {version}
 
 notification.revealed.title = Piktograma parodyta
 notification.revealed.one = Piktograma {name} dabar rodoma užduočių juostoje.
 notification.revealed.many = Užduočių juostoje dabar rodomos piktogramos ({count}): {names}
 notification.already_running = TrayReveal jau veikia. Norėdami atidaryti nustatymus, spustelėkite jo piktogramą dešiniuoju pelės mygtuku.
 notification.unavailable = Šiuo metu nepavyksta nuskaityti „Windows“ pranešimų srities piktogramų nustatymų. TrayReveal nieko nekeičia, kol jie vėl bus pasiekiami.
+notification.update.title = Yra naujinimas
+notification.update.text = Galima TrayReveal {version}. Atidarykite meniu, kad atsisiųstumėte.

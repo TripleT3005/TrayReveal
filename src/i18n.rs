@@ -34,6 +34,11 @@ pub const MENU_LANGUAGE: &str = "menu.language";
 pub const MENU_LANGUAGE_AUTOMATIC: &str = "menu.language.automatic";
 pub const MENU_AUTOSTART: &str = "menu.autostart";
 pub const MENU_QUIT: &str = "menu.quit";
+pub const MENU_UNDO: &str = "menu.undo";
+pub const MENU_CHECK_UPDATES: &str = "menu.check_updates";
+pub const MENU_UPDATE_AVAILABLE: &str = "menu.update_available";
+pub const NOTIFICATION_UPDATE_TITLE: &str = "notification.update.title";
+pub const NOTIFICATION_UPDATE_TEXT: &str = "notification.update.text";
 pub const NOTIFICATION_REVEALED_TITLE: &str = "notification.revealed.title";
 pub const NOTIFICATION_REVEALED_ONE: &str = "notification.revealed.one";
 pub const NOTIFICATION_REVEALED_MANY: &str = "notification.revealed.many";
@@ -41,7 +46,7 @@ pub const NOTIFICATION_ALREADY_RUNNING: &str = "notification.already_running";
 pub const NOTIFICATION_UNAVAILABLE: &str = "notification.unavailable";
 
 #[cfg(test)]
-const KEYS: [&str; 19] = [
+const KEYS: [&str; 24] = [
     LANGUAGE_NAME,
     MENU_MODE_OFF,
     MENU_MODE_NEW_ICONS,
@@ -61,6 +66,11 @@ const KEYS: [&str; 19] = [
     NOTIFICATION_ALREADY_RUNNING,
     NOTIFICATION_UNAVAILABLE,
     MENU_EXCEPTIONS_HINT,
+    MENU_UNDO,
+    MENU_CHECK_UPDATES,
+    MENU_UPDATE_AVAILABLE,
+    NOTIFICATION_UPDATE_TITLE,
+    NOTIFICATION_UPDATE_TEXT,
 ];
 
 #[cfg(test)]

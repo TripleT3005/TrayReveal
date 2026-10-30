@@ -23,9 +23,14 @@ menu.language = اللغة
 menu.language.automatic = تلقائي
 menu.autostart = التشغيل مع Windows
 menu.quit = خروج
+menu.undo = التراجع عن آخر تغيير
+menu.check_updates = التحقق من وجود تحديثات
+menu.update_available = تنزيل الإصدار {version}
 
 notification.revealed.title = تم إظهار أيقونة
 notification.revealed.one = يظهر {name} الآن على شريط المهام.
 notification.revealed.many = تظهر الآن {count} أيقونات على شريط المهام: {names}
 notification.already_running = TrayReveal قيد التشغيل بالفعل. انقر بزر الماوس الأيمن فوق أيقونته لفتح الإعدادات.
 notification.unavailable = يتعذر حاليًا قراءة إعدادات أيقونات منطقة الإعلامات في Windows. لن يغيّر TrayReveal أي شيء حتى تصبح متاحة مرة أخرى.
+notification.update.title = يتوفر تحديث
+notification.update.text = يتوفر TrayReveal {version}. افتح القائمة لتنزيله.

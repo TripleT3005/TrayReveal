@@ -22,9 +22,14 @@ menu.language = Limbă
 menu.language.automatic = Automat
 menu.autostart = Pornește odată cu Windows
 menu.quit = Ieșire
+menu.undo = Anulează ultima modificare
+menu.check_updates = Caută actualizări
+menu.update_available = Descarcă versiunea {version}
 
 notification.revealed.title = Pictogramă afișată
 notification.revealed.one = Pictograma {name} este acum afișată în bara de activități.
 notification.revealed.many = {count} pictograme sunt acum afișate în bara de activități: {names}
 notification.already_running = TrayReveal rulează deja. Faceți clic dreapta pe pictograma sa pentru setări.
 notification.unavailable = Setările pictogramelor din zona de notificare Windows nu pot fi citite momentan. TrayReveal nu modifică nimic până când acestea devin din nou disponibile.
+notification.update.title = Actualizare disponibilă
+notification.update.text = TrayReveal {version} este disponibil. Deschideți meniul pentru a-l descărca.

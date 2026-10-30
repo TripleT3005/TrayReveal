@@ -24,6 +24,8 @@ Start `TrayReveal.exe`. On the first start it only remembers the icons that alre
 - **Always show all icons** – keeps every icon visible, except the exceptions
 - **Show all icons now / Hide all icons now** – one-time actions; hiding is not available while all icons are always shown
 - **Exceptions** – lists the apps with their icons; apps marked with a red cross always stay hidden, clicking them again shows them again (except in Off mode)
+- **Undo last change** – reverts the last action from the menu (mode, show/hide all, exceptions) while TrayReveal is running
+- **Check for updates** – checks once a day whether a new version exists and announces it with a notification and the menu item **Download version …**
 - **Notify about new icons**, **Language**, **Start with Windows**, **Quit**
 
 The menu follows the light or dark mode of the taskbar.
@@ -49,7 +51,8 @@ TrayReveal waits for changes to this key (no polling), sets or creates `IsPromot
 
 - Runs as a standard user, no administrator rights, writes only to `HKCU`
 - No window, only a tray icon with a context menu
-- No network access, no telemetry
+- The only network access is the optional update check: shortly after the start and then once a day, TrayReveal requests the information about the latest release from `api.github.com`. It only downloads this information; nothing about your system or your icons is sent or uploaded, and GitHub only sees the usual request data such as the IP address and the program name with version (`TrayReveal/<version>`). It can be turned off with **Check for updates** in the menu. Updates are never downloaded or installed automatically, the menu only links to the release page.
+- No telemetry
 - Settings are stored in the registry under `HKCU\Software\TrayReveal`
 
 The registry key is not documented by Microsoft and may change with future Windows updates. If its layout changes, TrayReveal does nothing instead of guessing.
@@ -90,6 +93,8 @@ Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die 
 - **Immer alle Icons einblenden** – hält alle Icons sichtbar, außer den Ausnahmen
 - **Jetzt alle Icons einblenden / ausblenden** – einmalige Aktionen; Ausblenden ist nicht verfügbar, solange immer alle Icons eingeblendet werden
 - **Ausnahmen** – listet die Apps mit ihren Icons; mit rotem X markierte Apps bleiben immer ausgeblendet, ein erneuter Klick blendet sie wieder ein (außer im Modus „Aus“)
+- **Letzte Änderung rückgängig machen** – nimmt die letzte Aktion aus dem Menü zurück (Modus, Alle ein-/ausblenden, Ausnahmen), solange TrayReveal läuft
+- **Nach Updates suchen** – prüft einmal täglich, ob es eine neue Version gibt, und meldet sie mit einem Hinweis und dem Menüpunkt **Version … herunterladen**
 - **Hinweis bei neuen Icons**, **Sprache**, **Mit Windows starten**, **Beenden**
 
 Das Menü folgt dem hellen oder dunklen Modus der Taskleiste.
@@ -115,7 +120,8 @@ TrayReveal wartet auf Änderungen an diesem Schlüssel (ohne regelmäßiges Abfr
 
 - Läuft als Standardbenutzer, ohne Administratorrechte, schreibt nur in `HKCU`
 - Kein Fenster, nur ein Tray-Icon mit Kontextmenü
-- Kein Netzwerkzugriff, keine Telemetrie
+- Netzwerkzugriff gibt es nur für die abschaltbare Update-Prüfung: Kurz nach dem Start und danach einmal täglich ruft TrayReveal die Angaben zum neuesten Release von `api.github.com` ab. Dabei wird nur abgerufen, nichts über dein System oder deine Icons gesendet oder hochgeladen; GitHub sieht nur die üblichen Anfragedaten wie die IP-Adresse und den Programmnamen mit Version (`TrayReveal/<version>`). Abschalten lässt sie sich im Menü mit **Nach Updates suchen**. Updates werden nie automatisch heruntergeladen oder installiert, das Menü verlinkt nur auf die Release-Seite.
+- Keine Telemetrie
 - Einstellungen liegen in der Registry unter `HKCU\Software\TrayReveal`
 
 Der Registry-Schlüssel ist von Microsoft nicht dokumentiert und kann sich mit künftigen Windows-Updates ändern. Ändert sich sein Aufbau, tut TrayReveal nichts, statt zu raten.

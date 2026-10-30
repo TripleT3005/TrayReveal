@@ -22,9 +22,14 @@ menu.language = Język
 menu.language.automatic = Automatycznie
 menu.autostart = Uruchamiaj z systemem Windows
 menu.quit = Zakończ
+menu.undo = Cofnij ostatnią zmianę
+menu.check_updates = Sprawdzaj aktualizacje
+menu.update_available = Pobierz wersję {version}
 
 notification.revealed.title = Pokazano ikonę
 notification.revealed.one = Ikona {name} jest teraz widoczna na pasku zadań.
 notification.revealed.many = Na pasku zadań są teraz widoczne ikony ({count}): {names}
 notification.already_running = TrayReveal jest już uruchomiony. Kliknij prawym przyciskiem myszy jego ikonę, aby otworzyć ustawienia.
 notification.unavailable = Nie można teraz odczytać ustawień ikon zasobnika systemowego Windows. TrayReveal niczego nie zmienia, dopóki nie będą ponownie dostępne.
+notification.update.title = Dostępna aktualizacja
+notification.update.text = TrayReveal {version} jest dostępny. Otwórz menu, aby go pobrać.

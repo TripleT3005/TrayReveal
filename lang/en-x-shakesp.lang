@@ -22,9 +22,14 @@ menu.language = Tongue
 menu.language.automatic = As fortune wills
 menu.autostart = Rise with Windows
 menu.quit = Exeunt
+menu.undo = Undo thy last deed
+menu.check_updates = Seek tidings of updates
+menu.update_available = Fetch version {version}
 
 notification.revealed.title = An icon revealed
 notification.revealed.one = Hark! {name} doth now appear upon the taskbar.
 notification.revealed.many = Hark! {count} icons do now appear upon the taskbar: {names}
 notification.already_running = TrayReveal doth already run. Right-click its icon to behold thy settings.
 notification.unavailable = Alack, the tray settings of Windows cannot be read at this hour. TrayReveal shall alter naught until they return.
+notification.update.title = Tidings of an update
+notification.update.text = Hark! TrayReveal {version} is come. Open the menu to fetch it.

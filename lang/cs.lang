@@ -22,9 +22,14 @@ menu.language = Jazyk
 menu.language.automatic = Automaticky
 menu.autostart = Spouštět se systémem Windows
 menu.quit = Ukončit
+menu.undo = Vrátit poslední změnu
+menu.check_updates = Kontrolovat aktualizace
+menu.update_available = Stáhnout verzi {version}
 
 notification.revealed.title = Ikona zobrazena
 notification.revealed.one = Ikona {name} se nyní zobrazuje na hlavním panelu.
 notification.revealed.many = Na hlavním panelu se nyní zobrazují ikony ({count}): {names}
 notification.already_running = TrayReveal už běží. Nastavení otevřete kliknutím pravým tlačítkem na jeho ikonu.
 notification.unavailable = Nastavení ikon oznamovací oblasti systému Windows teď nelze načíst. TrayReveal nic nezmění, dokud nebudou znovu dostupná.
+notification.update.title = K dispozici je aktualizace
+notification.update.text = TrayReveal {version} je k dispozici. Stáhnete ho přes nabídku.
