@@ -13,8 +13,14 @@ const ENGLISH_CODE: &str = "en";
 const EXTENSION: &str = "lang";
 const MAX_FILE_SIZE: u64 = 256 * 1024;
 const MAX_CODE_LENGTH: usize = 16;
+const RIGHT_TO_LEFT: &str = "rtl";
+const SIMPLIFIED_CHINESE: &str = "zh-Hans";
+const TRADITIONAL_CHINESE: &str = "zh-Hant";
+const TRADITIONAL_CHINESE_REGIONS: [&str; 3] = ["TW", "HK", "MO"];
 
 pub const LANGUAGE_NAME: &str = "language.name";
+pub const LANGUAGE_FALLBACK: &str = "language.fallback";
+pub const LANGUAGE_DIRECTION: &str = "language.direction";
 pub const MENU_MODE_OFF: &str = "menu.mode.off";
 pub const MENU_MODE_NEW_ICONS: &str = "menu.mode.new_icons";
 pub const MENU_MODE_ALL_ICONS: &str = "menu.mode.all_icons";
@@ -57,6 +63,9 @@ const KEYS: [&str; 19] = [
     MENU_EXCEPTIONS_HINT,
 ];
 
+#[cfg(test)]
+const OPTIONAL_KEYS: [&str; 2] = [LANGUAGE_FALLBACK, LANGUAGE_DIRECTION];
+
 // Types
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Language {
@@ -91,6 +100,12 @@ impl Translations {
             text.replace(&format!("{{{name}}}"), value)
         })
     }
+
+    pub fn is_right_to_left(&self) -> bool {
+        self.texts
+            .get(LANGUAGE_DIRECTION)
+            .is_some_and(|direction| direction.eq_ignore_ascii_case(RIGHT_TO_LEFT))
+    }
 }
 
 pub fn available_languages() -> Vec<Language> {
@@ -109,15 +124,42 @@ pub fn available_languages() -> Vec<Language> {
 }
 
 fn load_texts(code: &str, directories: &[PathBuf]) -> HashMap<String, String> {
+    let fallback = read_language(code, directories)
+        .remove(LANGUAGE_FALLBACK)
+        .filter(|fallback| is_valid_code(fallback));
     let mut texts = parse(ENGLISH);
-    for code in fallback_chain(code) {
-        for directory in directories {
-            if let Some(content) = read_file(&directory.join(format!("{code}.{EXTENSION}"))) {
-                texts.extend(parse(&content));
-            }
+    for code in language_chain(code, fallback.as_deref()) {
+        texts.extend(read_language(code, directories));
+    }
+    texts
+}
+
+fn read_language(code: &str, directories: &[PathBuf]) -> HashMap<String, String> {
+    let mut texts = HashMap::new();
+    for directory in directories {
+        if let Some(content) = read_file(&directory.join(format!("{code}.{EXTENSION}"))) {
+            texts.extend(parse(&content));
         }
     }
     texts
+}
+
+fn language_chain<'a>(code: &'a str, fallback: Option<&'a str>) -> Vec<&'a str> {
+    let mut chain = Vec::new();
+    let candidates = fallback
+        .map(fallback_chain)
+        .unwrap_or_default()
+        .into_iter()
+        .chain(fallback_chain(code));
+    for candidate in candidates {
+        if !chain
+            .iter()
+            .any(|known: &&str| known.eq_ignore_ascii_case(candidate))
+        {
+            chain.push(candidate);
+        }
+    }
+    chain
 }
 
 // Languages
@@ -156,8 +198,40 @@ fn resolve_code(preference: Option<&str>, preferred: &[String], available: &[Str
     preference
         .into_iter()
         .chain(preferred.iter().map(String::as_str))
-        .find_map(|code| find(code).or_else(|| find(base_code(code))))
+        .find_map(|code| candidates(code).into_iter().find_map(find))
         .unwrap_or_else(|| ENGLISH_CODE.to_owned())
+}
+
+fn candidates(code: &str) -> Vec<&str> {
+    let mut candidates: Vec<&str> = code
+        .char_indices()
+        .filter(|&(_, character)| character == '-')
+        .map(|(index, _)| &code[..index])
+        .rev()
+        .collect();
+    candidates.insert(0, code);
+    if let Some(script) = script_code(code) {
+        candidates.insert(1, script);
+    }
+    candidates
+}
+
+fn script_code(code: &str) -> Option<&'static str> {
+    let mut parts = code.split('-');
+    if !parts.next()?.eq_ignore_ascii_case("zh") {
+        return None;
+    }
+    let traditional = parts.any(|part| {
+        part.eq_ignore_ascii_case("Hant")
+            || TRADITIONAL_CHINESE_REGIONS
+                .iter()
+                .any(|region| part.eq_ignore_ascii_case(region))
+    });
+    Some(if traditional {
+        TRADITIONAL_CHINESE
+    } else {
+        SIMPLIFIED_CHINESE
+    })
 }
 
 fn fallback_chain(code: &str) -> Vec<&str> {
@@ -289,6 +363,81 @@ mod tests {
     }
 
     #[test]
+    fn shortens_windows_language_codes() {
+        let available = codes(&["en", "sr-Latn", "nb"]);
+        assert_eq!(
+            resolve_code(None, &codes(&["sr-Latn-RS"]), &available),
+            "sr-Latn"
+        );
+        assert_eq!(resolve_code(None, &codes(&["nb-NO"]), &available), "nb");
+        assert_eq!(candidates("sr-Latn-RS"), ["sr-Latn-RS", "sr-Latn", "sr"]);
+        assert_eq!(candidates("zh-TW"), ["zh-TW", "zh-Hant", "zh"]);
+    }
+
+    #[test]
+    fn maps_chinese_regions_to_scripts() {
+        let available = codes(&["en", "zh-Hans", "zh-Hant"]);
+        assert_eq!(
+            resolve_code(None, &codes(&["zh-CN"]), &available),
+            "zh-Hans"
+        );
+        assert_eq!(
+            resolve_code(None, &codes(&["zh-SG"]), &available),
+            "zh-Hans"
+        );
+        assert_eq!(
+            resolve_code(None, &codes(&["zh-TW"]), &available),
+            "zh-Hant"
+        );
+        assert_eq!(
+            resolve_code(None, &codes(&["zh-HK"]), &available),
+            "zh-Hant"
+        );
+        assert_eq!(
+            resolve_code(None, &codes(&["zh-Hant-TW"]), &available),
+            "zh-Hant"
+        );
+        assert_eq!(script_code("de-DE"), None);
+    }
+
+    #[test]
+    fn falls_back_through_the_declared_language() {
+        assert_eq!(language_chain("sxu", Some("de")), ["en", "de", "sxu"]);
+        assert_eq!(
+            language_chain("de-x-amtsdt", Some("de")),
+            ["en", "de", "de-x-amtsdt"]
+        );
+        assert_eq!(language_chain("de-CH", None), ["en", "de", "de-CH"]);
+    }
+
+    #[test]
+    fn reads_the_declared_fallback_and_direction() {
+        let directory =
+            std::env::temp_dir().join(format!("trayreveal-fallback-{}", std::process::id()));
+        fs::create_dir_all(&directory).unwrap();
+        fs::write(
+            directory.join("de.lang"),
+            "menu.quit = Beenden\nmenu.language = Sprache\n",
+        )
+        .unwrap();
+        fs::write(
+            directory.join("yy.lang"),
+            "language.fallback = de\nmenu.quit = Feierabend\n",
+        )
+        .unwrap();
+        fs::write(directory.join("zz.lang"), "language.direction = RTL\n").unwrap();
+        let texts = load_texts("yy", std::slice::from_ref(&directory));
+        let right_to_left = Translations {
+            texts: load_texts("zz", std::slice::from_ref(&directory)),
+        };
+        fs::remove_dir_all(&directory).unwrap();
+        assert_eq!(texts[MENU_QUIT], "Feierabend");
+        assert_eq!(texts[MENU_LANGUAGE], "Sprache");
+        assert_eq!(texts[MENU_SHOW_ALL], parse(ENGLISH)[MENU_SHOW_ALL]);
+        assert!(right_to_left.is_right_to_left());
+    }
+
+    #[test]
     fn falls_back_through_english() {
         assert_eq!(fallback_chain("de-AT"), ["en", "de", "de-AT"]);
         assert_eq!(fallback_chain("de"), ["en", "de"]);
@@ -345,6 +494,9 @@ mod tests {
                 "{name} has an invalid name"
             );
             for (key, text) in &texts {
+                if OPTIONAL_KEYS.contains(&key.as_str()) {
+                    continue;
+                }
                 let Some(original) = english.get(key) else {
                     panic!("{name} contains the unknown text {key}");
                 };
