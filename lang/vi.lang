@@ -22,9 +22,14 @@ menu.language = Ngôn ngữ
 menu.language.automatic = Tự động
 menu.autostart = Khởi động cùng Windows
 menu.quit = Thoát
+menu.undo = Hoàn tác thay đổi gần nhất
+menu.check_updates = Kiểm tra bản cập nhật
+menu.update_available = Tải xuống phiên bản {version}
 
 notification.revealed.title = Đã hiện biểu tượng
 notification.revealed.one = {name} hiện được hiển thị trên thanh tác vụ.
 notification.revealed.many = {count} biểu tượng hiện được hiển thị trên thanh tác vụ: {names}
 notification.already_running = TrayReveal đang chạy. Nhấp chuột phải vào biểu tượng của ứng dụng để mở cài đặt.
 notification.unavailable = Hiện không thể đọc cài đặt biểu tượng của khu vực thông báo Windows. TrayReveal sẽ không thay đổi gì cho đến khi cài đặt khả dụng trở lại.
+notification.update.title = Có bản cập nhật
+notification.update.text = TrayReveal {version} đã có. Mở menu để tải xuống.

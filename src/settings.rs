@@ -14,12 +14,16 @@ const LANGUAGE: &str = "Language";
 const EXCEPTIONS: &str = "Exceptions";
 const KNOWN_ICONS: &str = "KnownIcons";
 const MISSING_ICONS: &str = "MissingIcons";
+const CHECK_UPDATES: &str = "CheckUpdates";
+const NOTIFIED_VERSION: &str = "NotifiedVersion";
 
 // Settings
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Settings {
     pub mode: Mode,
     pub notifications: bool,
+    pub check_updates: bool,
+    pub notified_version: Option<String>,
     pub language: Option<String>,
     pub exceptions: BTreeSet<String>,
     pub known: Option<BTreeSet<String>>,
@@ -31,6 +35,8 @@ impl Default for Settings {
         Self {
             mode: Mode::default(),
             notifications: true,
+            check_updates: true,
+            notified_version: None,
             language: None,
             exceptions: BTreeSet::new(),
             known: None,
@@ -53,6 +59,12 @@ impl Settings {
             notifications: key
                 .dword(NOTIFICATIONS)
                 .map_or(defaults.notifications, |value| value != 0),
+            check_updates: key
+                .dword(CHECK_UPDATES)
+                .map_or(defaults.check_updates, |value| value != 0),
+            notified_version: key
+                .string(NOTIFIED_VERSION)
+                .filter(|version| !version.is_empty()),
             language: key.string(LANGUAGE).filter(|language| !language.is_empty()),
             exceptions: key
                 .multi_string(EXCEPTIONS)
@@ -75,6 +87,11 @@ impl Settings {
         let key = open_for_writing()?;
         key.set_dword(MODE, mode_to_value(self.mode))?;
         key.set_dword(NOTIFICATIONS, u32::from(self.notifications))?;
+        key.set_dword(CHECK_UPDATES, u32::from(self.check_updates))?;
+        match &self.notified_version {
+            Some(version) => key.set_string(NOTIFIED_VERSION, version)?,
+            None => key.delete_value(NOTIFIED_VERSION)?,
+        }
         match &self.language {
             Some(language) => key.set_string(LANGUAGE, language)?,
             None => key.delete_value(LANGUAGE)?,

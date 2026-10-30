@@ -22,9 +22,14 @@ menu.language = Valoda
 menu.language.automatic = Automātiski
 menu.autostart = Palaist kopā ar Windows
 menu.quit = Iziet
+menu.undo = Atsaukt pēdējās izmaiņas
+menu.check_updates = Meklēt atjauninājumus
+menu.update_available = Lejupielādēt versiju {version}
 
 notification.revealed.title = Ikona parādīta
 notification.revealed.one = Ikona {name} tagad tiek rādīta uzdevumjoslā.
 notification.revealed.many = Uzdevumjoslā tagad tiek rādītas ikonas ({count}): {names}
 notification.already_running = TrayReveal jau darbojas. Lai atvērtu iestatījumus, ar peles labo pogu noklikšķiniet uz tā ikonas.
 notification.unavailable = Windows paziņojumu apgabala ikonu iestatījumus pašlaik nevar nolasīt. TrayReveal neko nemaina, līdz tie atkal būs pieejami.
+notification.update.title = Pieejams atjauninājums
+notification.update.text = Ir pieejama TrayReveal {version}. Atveriet izvēlni, lai to lejupielādētu.

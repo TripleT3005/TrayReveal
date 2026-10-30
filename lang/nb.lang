@@ -22,9 +22,14 @@ menu.language = Språk
 menu.language.automatic = Automatisk
 menu.autostart = Start med Windows
 menu.quit = Avslutt
+menu.undo = Angre siste endring
+menu.check_updates = Se etter oppdateringer
+menu.update_available = Last ned versjon {version}
 
 notification.revealed.title = Ikon vises
 notification.revealed.one = {name} vises nå på oppgavelinjen.
 notification.revealed.many = {count} ikoner vises nå på oppgavelinjen: {names}
 notification.already_running = TrayReveal kjører allerede. Høyreklikk på ikonet for å åpne innstillingene.
 notification.unavailable = Ikoninnstillingene for varslingsområdet i Windows kan ikke leses akkurat nå. TrayReveal endrer ingenting før de er tilgjengelige igjen.
+notification.update.title = Oppdatering tilgjengelig
+notification.update.text = TrayReveal {version} er tilgjengelig. Åpne menyen for å laste den ned.

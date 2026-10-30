@@ -22,9 +22,14 @@ menu.language = Keel
 menu.language.automatic = Automaatne
 menu.autostart = Käivita koos Windowsiga
 menu.quit = Välju
+menu.undo = Võta viimane muudatus tagasi
+menu.check_updates = Otsi värskendusi
+menu.update_available = Laadi alla versioon {version}
 
 notification.revealed.title = Ikoon kuvatud
 notification.revealed.one = {name} on nüüd tegumiribal nähtav.
 notification.revealed.many = Tegumiribal on nüüd nähtav {count} ikooni: {names}
 notification.already_running = TrayReveal juba töötab. Sätete avamiseks paremklõpsake selle ikooni.
 notification.unavailable = Windowsi teavitusala ikoonisätteid ei saa praegu lugeda. TrayReveal ei muuda midagi, kuni need on taas saadaval.
+notification.update.title = Värskendus saadaval
+notification.update.text = TrayReveal {version} on saadaval. Allalaadimiseks avage menüü.

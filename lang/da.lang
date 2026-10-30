@@ -22,9 +22,14 @@ menu.language = Sprog
 menu.language.automatic = Automatisk
 menu.autostart = Start med Windows
 menu.quit = Afslut
+menu.undo = Fortryd seneste ændring
+menu.check_updates = Søg efter opdateringer
+menu.update_available = Download version {version}
 
 notification.revealed.title = Ikon vist
 notification.revealed.one = {name} vises nu på proceslinjen.
 notification.revealed.many = {count} ikoner vises nu på proceslinjen: {names}
 notification.already_running = TrayReveal kører allerede. Højreklik på ikonet for at åbne indstillingerne.
 notification.unavailable = Indstillingerne for ikoner i Windows-meddelelsesområdet kan ikke læses lige nu. TrayReveal ændrer intet, før de er tilgængelige igen.
+notification.update.title = Opdatering tilgængelig
+notification.update.text = TrayReveal {version} er tilgængelig. Åbn menuen for at downloade den.

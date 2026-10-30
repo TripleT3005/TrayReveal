@@ -22,9 +22,14 @@ menu.language = SPEEK
 menu.language.automatic = U DECIDE KTHX
 menu.autostart = START WIF WINDOWZ
 menu.quit = KTHXBAI
+menu.undo = UNDO WUT I DID
+menu.check_updates = CHEK 4 UPDAETZ
+menu.update_available = GIMME VERSHUN {version}
 
 notification.revealed.title = I CAN HAS ICON
 notification.revealed.one = OH HAI! {name} IZ ON TEH TASKBAR NAO.
 notification.revealed.many = OH HAI! {count} ICONZ IZ ON TEH TASKBAR NAO: {names}
 notification.already_running = TRAYREVEAL IZ ALREDY RUNNIN. RITE CLIK MAH ICON 4 SETTINZ.
 notification.unavailable = OH NOES! CANT READ TEH TRAY SETTINZ OF WINDOWZ RITE NAO. TRAYREVEAL CHANGEZ NOTHIN TIL DEY BAK.
+notification.update.title = NEW VERSHUN!!1
+notification.update.text = OH HAI! TRAYREVEAL {version} IZ HERE. OPEN TEH MENU 2 GET IT.

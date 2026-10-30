@@ -23,9 +23,14 @@ menu.language = Schbrache
 menu.language.automatic = Automaddsch
 menu.autostart = Mit Windows schdardn
 menu.quit = Feierahmd
+menu.undo = Ledsde Änderung rüggängsch machn
+menu.check_updates = Nach Updades guggn
+menu.update_available = Version {version} runnorladn
 
 notification.revealed.title = Icon angezeichd
 notification.revealed.one = {name} wird jetze in dor Taskleisde angezeichd.
 notification.revealed.many = {count} Icons wern jetze in dor Taskleisde angezeichd: {names}
 notification.already_running = TrayReveal läufd schon. De Einschdellungn gibbs mit'm Reschtsglick uffs Tray-Icon.
 notification.unavailable = De Tray-Icon-Einschdellungn von Windows gönn grade ni gelesn wern. TrayReveal ändord nischd, bis die widdor da sin.
+notification.update.title = Update da
+notification.update.text = TrayReveal {version} is da. Zum Runnorladn 's Menü uffmachn.

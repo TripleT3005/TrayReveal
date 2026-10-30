@@ -20,6 +20,7 @@ mod settings;
 mod sync;
 mod theme;
 mod tray;
+mod update;
 mod watcher;
 mod wide;
 

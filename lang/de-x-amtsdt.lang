@@ -23,9 +23,14 @@ menu.language = Amtssprache
 menu.language.automatic = Automatische Festsetzung
 menu.autostart = Inbetriebnahme bei Systemstart
 menu.quit = Dienstschluss
+menu.undo = Rückabwicklung der letzten Maßnahme
+menu.check_updates = Prüfung auf Vorliegen einer Neufassung
+menu.update_available = Abruf der Fassung {version} beantragen
 
 notification.revealed.title = Bescheid über erfolgte Sichtbarmachung
 notification.revealed.one = Hiermit wird mitgeteilt, dass {name} ab sofort in der Taskleiste zur Anzeige gebracht wird.
 notification.revealed.many = Hiermit wird mitgeteilt, dass {count} Symbole ab sofort in der Taskleiste zur Anzeige gebracht werden: {names}
 notification.already_running = Es wird darauf hingewiesen, dass sich TrayReveal bereits in Betrieb befindet. Einstellungen sind per Rechtsklick auf das Symbol zu beantragen.
 notification.unavailable = Die Tray-Symbol-Einstellungen von Windows sind derzeit nicht auslesbar. Bis zur Wiederherstellung der Verfügbarkeit werden seitens TrayReveal keine Änderungen vorgenommen.
+notification.update.title = Bekanntmachung über eine Neufassung
+notification.update.text = Es wird mitgeteilt, dass TrayReveal in der Fassung {version} vorliegt. Der Abruf ist über das Menü zu veranlassen.

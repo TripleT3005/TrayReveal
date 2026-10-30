@@ -22,9 +22,14 @@ menu.language = Idioma
 menu.language.automatic = Automático
 menu.autostart = Iniciar com o Windows
 menu.quit = Sair
+menu.undo = Anular a última alteração
+menu.check_updates = Procurar atualizações
+menu.update_available = Transferir a versão {version}
 
 notification.revealed.title = Ícone apresentado
 notification.revealed.one = {name} é agora apresentado na barra de tarefas.
 notification.revealed.many = {count} ícones são agora apresentados na barra de tarefas: {names}
 notification.already_running = O TrayReveal já está em execução. Clique com o botão direito do rato no respetivo ícone para abrir as definições.
 notification.unavailable = De momento, não é possível ler as definições dos ícones da área de notificação do Windows. O TrayReveal não altera nada até estarem novamente disponíveis.
+notification.update.title = Atualização disponível
+notification.update.text = O TrayReveal {version} está disponível. Abra o menu para o transferir.

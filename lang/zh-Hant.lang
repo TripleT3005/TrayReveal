@@ -22,9 +22,14 @@ menu.language = 語言
 menu.language.automatic = 自動
 menu.autostart = 隨 Windows 啟動
 menu.quit = 結束
+menu.undo = 復原上一次變更
+menu.check_updates = 檢查更新
+menu.update_available = 下載版本 {version}
 
 notification.revealed.title = 已顯示圖示
 notification.revealed.one = {name} 現在會顯示在工作列上。
 notification.revealed.many = {count} 個圖示現在會顯示在工作列上：{names}
 notification.already_running = TrayReveal 已在執行中。以滑鼠右鍵按一下其圖示即可開啟設定。
 notification.unavailable = 目前無法讀取 Windows 通知區域的圖示設定。在設定恢復可用之前，TrayReveal 不會進行任何變更。
+notification.update.title = 有可用的更新
+notification.update.text = TrayReveal {version} 已推出。開啟選單即可下載。

@@ -22,9 +22,14 @@ menu.language = Language
 menu.language.automatic = Automatic
 menu.autostart = Start with Windows
 menu.quit = Quit
+menu.undo = Undo last change
+menu.check_updates = Check for updates
+menu.update_available = Download version {version}
 
 notification.revealed.title = Tray icon shown
 notification.revealed.one = {name} is now shown on the taskbar.
 notification.revealed.many = {count} icons are now shown on the taskbar: {names}
 notification.already_running = TrayReveal is already running. Right-click its tray icon for the settings.
 notification.unavailable = The tray icon settings of Windows cannot be read right now. TrayReveal changes nothing until they are available again.
+notification.update.title = Update available
+notification.update.text = TrayReveal {version} is available. Open the menu to download it.

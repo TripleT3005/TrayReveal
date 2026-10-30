@@ -22,9 +22,14 @@ menu.language = Språk
 menu.language.automatic = Automatiskt
 menu.autostart = Starta med Windows
 menu.quit = Avsluta
+menu.undo = Ångra senaste ändringen
+menu.check_updates = Sök efter uppdateringar
+menu.update_available = Ladda ned version {version}
 
 notification.revealed.title = Ikon visas
 notification.revealed.one = {name} visas nu i aktivitetsfältet.
 notification.revealed.many = {count} ikoner visas nu i aktivitetsfältet: {names}
 notification.already_running = TrayReveal körs redan. Högerklicka på ikonen för att öppna inställningarna.
 notification.unavailable = Ikoninställningarna för Windows meddelandefält kan inte läsas just nu. TrayReveal ändrar ingenting förrän de är tillgängliga igen.
+notification.update.title = Uppdatering tillgänglig
+notification.update.text = TrayReveal {version} är tillgänglig. Öppna menyn för att ladda ned den.

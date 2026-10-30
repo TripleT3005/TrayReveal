@@ -22,9 +22,14 @@ menu.language = Dil
 menu.language.automatic = Otomatik
 menu.autostart = Windows ile başlat
 menu.quit = Çıkış
+menu.undo = Son değişikliği geri al
+menu.check_updates = Güncellemeleri denetle
+menu.update_available = {version} sürümünü indir
 
 notification.revealed.title = Simge gösterildi
 notification.revealed.one = {name} artık görev çubuğunda gösteriliyor.
 notification.revealed.many = {count} simge artık görev çubuğunda gösteriliyor: {names}
 notification.already_running = TrayReveal zaten çalışıyor. Ayarlar için simgesine sağ tıklayın.
 notification.unavailable = Windows bildirim alanının simge ayarları şu anda okunamıyor. TrayReveal, ayarlar yeniden kullanılabilir olana kadar hiçbir şeyi değiştirmez.
+notification.update.title = Güncelleştirme mevcut
+notification.update.text = TrayReveal {version} kullanılabilir. İndirmek için menüyü açın.

@@ -22,9 +22,14 @@ menu.language = Anguagelay
 menu.language.automatic = Automaticway
 menu.autostart = Artstay ithway Indowsway
 menu.quit = Uitqay
+menu.undo = Undoway astlay angechay
+menu.check_updates = Eckchay orfay updatesway
+menu.update_available = Ownloadday ersionvay {version}
 
 notification.revealed.title = Aytray iconway ownshay
 notification.revealed.one = {name} isway ownay ownshay onway ethay askbartay.
 notification.revealed.many = {count} iconsway areway ownay ownshay onway ethay askbartay: {names}
 notification.already_running = TrayReveal isway alreadyway unningray. Ightray-ickclay itsway aytray iconway orfay ethay ettingssay.
 notification.unavailable = Ethay aytray iconway ettingssay ofway Indowsway annotcay ebay eadray ightray ownay. TrayReveal angeschay othingnay untilway eythay areway availableway againway.
+notification.update.title = Updateway availableway
+notification.update.text = TrayReveal {version} isway availableway. Openway ethay enumay otay ownloadday itway.

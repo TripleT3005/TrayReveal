@@ -23,9 +23,14 @@ menu.language = Sprooch
 menu.language.automatic = Automatisch
 menu.autostart = Mit Windows starta
 menu.quit = Feierobend
+menu.undo = Letzte Änderung rückgängig macha
+menu.check_updates = Nach Updates gucka
+menu.update_available = Version {version} ronderlada
 
 notification.revealed.title = Icon azeigt
 notification.revealed.one = {name} wird jetzt en dr Taskleischt azeigt.
 notification.revealed.many = {count} Icons werdet jetzt en dr Taskleischt azeigt: {names}
 notification.already_running = TrayReveal lauft scho. D'Eistellunga fendsch mit am Rechtsklick aufs Tray-Icon.
 notification.unavailable = D'Tray-Icon-Eistellunga vo Windows ka mr grad et lesa. TrayReveal ändert nix, bis se wieder do send.
+notification.update.title = Update do
+notification.update.text = TrayReveal {version} isch do. Zum Ronderlada s'Menü aufmacha.

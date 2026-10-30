@@ -22,9 +22,14 @@ menu.language = Jezik
 menu.language.automatic = Automatski
 menu.autostart = Pokreni sa sustavom Windows
 menu.quit = Izlaz
+menu.undo = Poništi posljednju promjenu
+menu.check_updates = Traži ažuriranja
+menu.update_available = Preuzmi verziju {version}
 
 notification.revealed.title = Ikona prikazana
 notification.revealed.one = Ikona {name} sada se prikazuje na programskoj traci.
 notification.revealed.many = Na programskoj traci sada se prikazuju ikone ({count}): {names}
 notification.already_running = TrayReveal je već pokrenut. Za postavke desnom tipkom miša kliknite njegovu ikonu.
 notification.unavailable = Postavke ikona u području obavijesti sustava Windows trenutačno se ne mogu pročitati. TrayReveal ne mijenja ništa dok ponovno ne budu dostupne.
+notification.update.title = Dostupno je ažuriranje
+notification.update.text = TrayReveal {version} je dostupan. Otvorite izbornik da biste ga preuzeli.

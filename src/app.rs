@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use std::collections::BTreeSet;
 use std::mem;
 use std::process::ExitCode;
 use std::ptr;
@@ -6,16 +7,16 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 use windows_sys::Win32::Foundation::{HWND, LPARAM, LRESULT, POINT, WPARAM};
 use windows_sys::Win32::System::LibraryLoader::GetModuleHandleW;
-use windows_sys::Win32::UI::Shell::NIN_SELECT;
+use windows_sys::Win32::UI::Shell::{NIN_SELECT, ShellExecuteW};
 use windows_sys::Win32::UI::WindowsAndMessaging::{
     AppendMenuW, CheckMenuRadioItem, CreatePopupMenu, CreateWindowExW, DefWindowProcW, DestroyMenu,
     DestroyWindow, DispatchMessageW, FindWindowW, GetCursorPos, GetMessageW, GetSystemMetrics,
     HMENU, KillTimer, MENUITEMINFOW, MF_BYCOMMAND, MF_CHECKED, MF_GRAYED, MF_POPUP, MF_SEPARATOR,
     MF_STRING, MIIM_BITMAP, MSG, PBT_APMRESUMEAUTOMATIC, PostMessageW, PostQuitMessage,
-    RegisterClassExW, RegisterWindowMessageW, SM_CXSMICON, SetForegroundWindow, SetMenuItemInfoW,
-    SetTimer, TPM_LAYOUTRTL, TPM_NONOTIFY, TPM_RETURNCMD, TPM_RIGHTBUTTON, TrackPopupMenu,
-    TranslateMessage, WM_APP, WM_CONTEXTMENU, WM_DESTROY, WM_NULL, WM_POWERBROADCAST,
-    WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
+    RegisterClassExW, RegisterWindowMessageW, SM_CXSMICON, SW_SHOWNORMAL, SetForegroundWindow,
+    SetMenuItemInfoW, SetTimer, TPM_LAYOUTRTL, TPM_NONOTIFY, TPM_RETURNCMD, TPM_RIGHTBUTTON,
+    TrackPopupMenu, TranslateMessage, WM_APP, WM_CONTEXTMENU, WM_DESTROY, WM_NULL,
+    WM_POWERBROADCAST, WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
 };
 
 use crate::autostart;
@@ -23,9 +24,10 @@ use crate::engine::Mode;
 use crate::i18n::{self, Language, Translations};
 use crate::icon_snapshot::{self, MenuBitmap};
 use crate::settings::Settings;
-use crate::sync::{self, App as InstalledApp};
+use crate::sync::{self, App as InstalledApp, Previous};
 use crate::theme;
 use crate::tray::TrayIcon;
+use crate::update::{self, Release};
 use crate::wide::{from_wide, to_wide};
 
 // Constants
@@ -34,6 +36,7 @@ const WINDOW_TITLE: &str = "TrayReveal";
 const WM_TRAY: u32 = WM_APP + 1;
 const WM_REGISTRY_CHANGED: u32 = WM_APP + 2;
 const WM_ALREADY_RUNNING: u32 = WM_APP + 3;
+const WM_UPDATE_AVAILABLE: u32 = WM_APP + 4;
 const NIN_KEYSELECT: u32 = NIN_SELECT | 1;
 const TIMER_DEBOUNCE: usize = 1;
 const TIMER_PERIODIC: usize = 2;
@@ -49,6 +52,9 @@ const ID_HIDE_ALL: u32 = 11;
 const ID_NOTIFICATIONS: u32 = 12;
 const ID_AUTOSTART: u32 = 13;
 const ID_QUIT: u32 = 14;
+const ID_UNDO: u32 = 15;
+const ID_CHECK_UPDATES: u32 = 16;
+const ID_DOWNLOAD_UPDATE: u32 = 17;
 const ID_LANGUAGE_AUTOMATIC: u32 = 100;
 const ID_LANGUAGE_FIRST: u32 = 101;
 const ID_EXCEPTION_FIRST: u32 = 1000;
@@ -65,18 +71,27 @@ struct State {
     settings: Settings,
     translations: Translations,
     unavailable: bool,
+    undo: Option<Undo>,
+    update: Option<Release>,
 }
 
 struct MenuModel {
     texts: MenuTexts,
     mode: Mode,
-    notifications: bool,
-    autostart: bool,
+    toggles: MenuToggles,
     language: Option<String>,
     languages: Vec<Language>,
     apps: Vec<InstalledApp>,
     exceptions: Vec<bool>,
     right_to_left: bool,
+    can_undo: bool,
+    update: Option<String>,
+}
+
+struct MenuToggles {
+    notifications: bool,
+    autostart: bool,
+    check_updates: bool,
 }
 
 struct MenuTexts {
@@ -93,6 +108,15 @@ struct MenuTexts {
     language_automatic: String,
     autostart: String,
     quit: String,
+    undo: String,
+    check_updates: String,
+    download_update: String,
+}
+
+struct Undo {
+    mode: Mode,
+    exceptions: BTreeSet<String>,
+    icons: Previous,
 }
 
 struct Menu(HMENU);
@@ -138,9 +162,14 @@ pub fn run() -> ExitCode {
         settings,
         translations,
         unavailable: false,
+        undo: None,
+        update: None,
     };
     theme::apply();
     crate::watcher::spawn(window, WM_REGISTRY_CHANGED);
+    update::spawn(window, WM_UPDATE_AVAILABLE, || {
+        Settings::load().check_updates
+    });
     state.synchronize();
     state.tray.add(WM_TRAY);
     STATE.with(|cell| *cell.borrow_mut() = Some(state));
@@ -230,6 +259,10 @@ unsafe extern "system" fn window_procedure(
             });
             0
         }
+        WM_UPDATE_AVAILABLE => {
+            with_state(State::announce_update);
+            0
+        }
         WM_SETTINGCHANGE => {
             if is_color_set_change(lparam) {
                 theme::apply();
@@ -278,15 +311,57 @@ fn schedule_synchronization(window: HWND) {
 
 // Behavior
 impl State {
-    fn synchronize(&mut self) {
-        let Ok(revealed) = sync::synchronize(&mut self.settings) else {
+    fn synchronize(&mut self) -> Previous {
+        let Ok(synchronized) = sync::synchronize(&mut self.settings) else {
             self.report(false);
-            return;
+            return Previous::new();
         };
         self.report(true);
-        if self.settings.notifications && !revealed.is_empty() {
-            self.notify_revealed(&revealed);
+        if self.settings.notifications && !synchronized.revealed.is_empty() {
+            self.notify_revealed(&synchronized.revealed);
         }
+        synchronized.previous
+    }
+
+    fn announce_update(&mut self) {
+        self.update = update::available();
+        let Some(release) = &self.update else {
+            return;
+        };
+        if self.settings.notified_version.as_ref() == Some(&release.version) {
+            return;
+        }
+        let version = release.version.clone();
+        let title = self.translations.text(i18n::NOTIFICATION_UPDATE_TITLE);
+        let text = self
+            .translations
+            .format(i18n::NOTIFICATION_UPDATE_TEXT, &[("version", &version)]);
+        self.tray.notify(&title, &text);
+        self.settings.notified_version = Some(version);
+        self.save();
+    }
+
+    fn remember(&mut self, mode: Mode, exceptions: BTreeSet<String>, icons: Previous) {
+        if icons.is_empty() && mode == self.settings.mode && exceptions == self.settings.exceptions
+        {
+            return;
+        }
+        self.undo = Some(Undo {
+            mode,
+            exceptions,
+            icons,
+        });
+    }
+
+    fn undo(&mut self) {
+        let Some(undo) = self.undo.take() else {
+            return;
+        };
+        self.settings.mode = undo.mode;
+        self.settings.exceptions = undo.exceptions;
+        self.save();
+        let succeeded = sync::restore(&undo.icons).is_ok();
+        self.report(succeeded);
     }
 
     fn notify_revealed(&self, names: &[String]) {
@@ -328,6 +403,8 @@ impl State {
     }
 
     fn execute(&mut self, command: u32, model: &MenuModel) {
+        let mode = self.settings.mode;
+        let exceptions = self.settings.exceptions.clone();
         match command {
             ID_MODE_OFF | ID_MODE_NEW_ICONS | ID_MODE_ALL_ICONS => {
                 self.settings.mode = match command {
@@ -336,18 +413,37 @@ impl State {
                     _ => Mode::NewIcons,
                 };
                 self.save();
-                self.synchronize();
+                let previous = self.synchronize();
+                self.remember(mode, exceptions, previous);
             }
             ID_SHOW_ALL | ID_HIDE_ALL => {
-                let succeeded = sync::set_all(&self.settings, command == ID_SHOW_ALL).is_ok();
-                self.report(succeeded);
+                let result = sync::set_all(&self.settings, command == ID_SHOW_ALL);
+                self.report(result.is_ok());
+                if let Ok(previous) = result {
+                    self.remember(mode, exceptions, previous);
+                }
+            }
+            ID_UNDO => self.undo(),
+            ID_CHECK_UPDATES => {
+                self.settings.check_updates = !self.settings.check_updates;
+                if !self.settings.check_updates {
+                    self.update = None;
+                }
+                self.save();
+            }
+            ID_DOWNLOAD_UPDATE => {
+                let url = self
+                    .update
+                    .as_ref()
+                    .map_or(update::RELEASES_URL, |release| release.url.as_str());
+                open_url(url);
             }
             ID_NOTIFICATIONS => {
                 self.settings.notifications = !self.settings.notifications;
                 self.save();
             }
             ID_AUTOSTART => {
-                let succeeded = autostart::set_enabled(!model.autostart).is_ok();
+                let succeeded = autostart::set_enabled(!model.toggles.autostart).is_ok();
                 self.report(succeeded);
             }
             ID_LANGUAGE_AUTOMATIC => self.set_language(None),
@@ -355,7 +451,8 @@ impl State {
                 if let Some(app) =
                     index(command, ID_EXCEPTION_FIRST).and_then(|index| model.apps.get(index))
                 {
-                    self.toggle_exception(&app.key);
+                    let previous = self.toggle_exception(&app.key);
+                    self.remember(mode, exceptions, previous);
                 }
             }
             _ if command >= ID_LANGUAGE_FIRST => {
@@ -375,16 +472,18 @@ impl State {
         self.translations = Translations::load(self.settings.language.as_deref());
     }
 
-    fn toggle_exception(&mut self, key: &str) {
+    fn toggle_exception(&mut self, key: &str) -> Previous {
         let excepted = !self.settings.exceptions.remove(key);
         if excepted {
             self.settings.exceptions.insert(key.to_owned());
         }
         self.save();
-        if excepted || self.settings.mode != Mode::Off {
-            let succeeded = sync::set_app(key, !excepted).is_ok();
-            self.report(succeeded);
+        if !excepted && self.settings.mode == Mode::Off {
+            return Previous::new();
         }
+        let result = sync::set_app(key, !excepted);
+        self.report(result.is_ok());
+        result.unwrap_or_default()
     }
 
     fn menu_model(&self) -> MenuModel {
@@ -405,10 +504,21 @@ impl State {
                 language_automatic: text(i18n::MENU_LANGUAGE_AUTOMATIC),
                 autostart: text(i18n::MENU_AUTOSTART),
                 quit: text(i18n::MENU_QUIT),
+                undo: text(i18n::MENU_UNDO),
+                check_updates: text(i18n::MENU_CHECK_UPDATES),
+                download_update: self.update.as_ref().map_or_else(String::new, |release| {
+                    self.translations.format(
+                        i18n::MENU_UPDATE_AVAILABLE,
+                        &[("version", &release.version)],
+                    )
+                }),
             },
             mode: self.settings.mode,
-            notifications: self.settings.notifications,
-            autostart: autostart::is_enabled(),
+            toggles: MenuToggles {
+                notifications: self.settings.notifications,
+                autostart: autostart::is_enabled(),
+                check_updates: self.settings.check_updates,
+            },
             language: self.settings.language.clone(),
             languages: i18n::available_languages(),
             exceptions: apps
@@ -417,6 +527,9 @@ impl State {
                 .collect(),
             apps,
             right_to_left: self.translations.is_right_to_left(),
+            can_undo: self.undo.is_some(),
+
+            update: self.update.as_ref().map(|release| release.version.clone()),
         }
     }
 }
@@ -490,22 +603,33 @@ fn build_menu(model: &MenuModel, bitmaps: &mut Vec<MenuBitmap>) -> Option<Menu> 
         MF_STRING
     };
     append(&menu, hide_flags, ID_HIDE_ALL, &texts.hide_all);
+    let undo_flags = if model.can_undo { MF_STRING } else { MF_GRAYED };
+    append(&menu, undo_flags, ID_UNDO, &texts.undo);
     append_submenu(&menu, exceptions_menu(model, bitmaps)?, &texts.exceptions);
     separator(&menu);
     append(
         &menu,
-        checked(model.notifications),
+        checked(model.toggles.notifications),
         ID_NOTIFICATIONS,
         &texts.notifications,
     );
     append_submenu(&menu, languages_menu(model)?, &texts.language);
     append(
         &menu,
-        checked(model.autostart),
+        checked(model.toggles.autostart),
         ID_AUTOSTART,
         &texts.autostart,
     );
+    append(
+        &menu,
+        checked(model.toggles.check_updates),
+        ID_CHECK_UPDATES,
+        &texts.check_updates,
+    );
     separator(&menu);
+    if model.update.is_some() {
+        append(&menu, MF_STRING, ID_DOWNLOAD_UPDATE, &texts.download_update);
+    }
     append(&menu, MF_STRING, ID_QUIT, &texts.quit);
     Some(menu)
 }
@@ -612,6 +736,21 @@ fn append_submenu(menu: &Menu, submenu: Menu, text: &str) {
     mem::forget(submenu);
     unsafe {
         AppendMenuW(menu.0, MF_POPUP, handle as usize, text.as_ptr());
+    }
+}
+
+fn open_url(url: &str) {
+    let operation = to_wide("open");
+    let url = to_wide(url);
+    unsafe {
+        ShellExecuteW(
+            ptr::null_mut(),
+            operation.as_ptr(),
+            url.as_ptr(),
+            ptr::null(),
+            ptr::null(),
+            SW_SHOWNORMAL,
+        );
     }
 }
 

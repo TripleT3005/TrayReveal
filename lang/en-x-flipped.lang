@@ -22,9 +22,14 @@ menu.language = ǝƃɐnƃuɐl
 menu.language.automatic = ɔıʇɐɯoʇnɐ
 menu.autostart = sʍopuıʍ ɥʇıʍ ʇɹɐʇs
 menu.quit = ʇınb
+menu.undo = ǝƃuɐɥɔ ʇsɐl opun
+menu.check_updates = sǝʇɐpdn ɹoɟ ʞɔǝɥɔ
+menu.update_available = {version} uoısɹǝʌ pɐoluʍop
 
 notification.revealed.title = uʍoɥs uoɔı ʎɐɹʇ
 notification.revealed.one = ˙ɹɐqʞsɐʇ ǝɥʇ uo uʍoɥs ʍou sı {name}
 notification.revealed.many = {names} :ɹɐqʞsɐʇ ǝɥʇ uo uʍoɥs ʍou ǝɹɐ suoɔı {count}
 notification.already_running = ˙sƃuıʇʇǝs ǝɥʇ ɹoɟ uoɔı ʎɐɹʇ sʇı ʞɔılɔ-ʇɥƃıɹ ˙ƃuıuunɹ ʎpɐǝɹlɐ sı lɐǝʌǝɹʎɐɹʇ
 notification.unavailable = ˙uıɐƃɐ ǝlqɐlıɐʌɐ ǝɹɐ ʎǝɥʇ lıʇun ƃuıɥʇou sǝƃuɐɥɔ lɐǝʌǝɹʎɐɹʇ ˙ʍou ʇɥƃıɹ pɐǝɹ ǝq ʇouuɐɔ sʍopuıʍ ɟo sƃuıʇʇǝs uoɔı ʎɐɹʇ ǝɥʇ
+notification.update.title = ǝlqɐlıɐʌɐ ǝʇɐpdn
+notification.update.text = ˙ʇı pɐoluʍop oʇ nuǝɯ ǝɥʇ uǝdo ˙ǝlqɐlıɐʌɐ sı {version} lɐǝʌǝɹʎɐɹʇ

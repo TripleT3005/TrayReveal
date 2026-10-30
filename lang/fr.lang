@@ -22,9 +22,14 @@ menu.language = Langue
 menu.language.automatic = Automatique
 menu.autostart = Lancer au démarrage de Windows
 menu.quit = Quitter
+menu.undo = Annuler la dernière modification
+menu.check_updates = Rechercher les mises à jour
+menu.update_available = Télécharger la version {version}
 
 notification.revealed.title = Icône affichée
 notification.revealed.one = {name} est désormais affiché dans la barre des tâches.
 notification.revealed.many = {count} icônes sont désormais affichées dans la barre des tâches : {names}
 notification.already_running = TrayReveal est déjà en cours d'exécution. Cliquez avec le bouton droit sur son icône pour ouvrir les paramètres.
 notification.unavailable = Les paramètres des icônes de la zone de notification de Windows ne peuvent pas être lus pour le moment. TrayReveal ne modifie rien tant qu'ils ne sont pas de nouveau disponibles.
+notification.update.title = Mise à jour disponible
+notification.update.text = TrayReveal {version} est disponible. Ouvrez le menu pour le télécharger.

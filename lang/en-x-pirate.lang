@@ -22,9 +22,14 @@ menu.language = Tongue
 menu.language.automatic = Ship's choice
 menu.autostart = Set sail with Windows
 menu.quit = Abandon ship
+menu.undo = Belay that last order
+menu.check_updates = Scan the horizon fer updates
+menu.update_available = Plunder version {version}
 
 notification.revealed.title = Colours hoisted!
 notification.revealed.one = Arr! {name} now flies on the taskbar.
 notification.revealed.many = Arr! {count} colours now fly on the taskbar: {names}
 notification.already_running = Avast! TrayReveal be sailin' already. Right-click its flag fer the ship's orders.
 notification.unavailable = Blimey! The tray charts o' Windows can't be read right now. TrayReveal won't touch a thing till they be back.
+notification.update.title = New ship spotted!
+notification.update.text = Arr! TrayReveal {version} be on the horizon. Open the menu to plunder it.

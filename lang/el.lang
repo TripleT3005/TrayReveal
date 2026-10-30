@@ -22,9 +22,14 @@ menu.language = Γλώσσα
 menu.language.automatic = Αυτόματα
 menu.autostart = Εκκίνηση με τα Windows
 menu.quit = Έξοδος
+menu.undo = Αναίρεση τελευταίας αλλαγής
+menu.check_updates = Έλεγχος για ενημερώσεις
+menu.update_available = Λήψη έκδοσης {version}
 
 notification.revealed.title = Εμφανίστηκε εικονίδιο
 notification.revealed.one = Το {name} εμφανίζεται πλέον στη γραμμή εργασιών.
 notification.revealed.many = {count} εικονίδια εμφανίζονται πλέον στη γραμμή εργασιών: {names}
 notification.already_running = Το TrayReveal εκτελείται ήδη. Κάντε δεξί κλικ στο εικονίδιό του για τις ρυθμίσεις.
 notification.unavailable = Δεν είναι δυνατή η ανάγνωση των ρυθμίσεων εικονιδίων της περιοχής ειδοποιήσεων των Windows αυτή τη στιγμή. Το TrayReveal δεν αλλάζει τίποτα μέχρι να είναι ξανά διαθέσιμες.
+notification.update.title = Διαθέσιμη ενημέρωση
+notification.update.text = Το TrayReveal {version} είναι διαθέσιμο. Ανοίξτε το μενού για να το κατεβάσετε.

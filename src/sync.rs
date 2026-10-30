@@ -21,8 +21,15 @@ pub struct App {
     pub snapshot: Vec<u8>,
 }
 
+pub type Previous = Vec<(String, Option<bool>)>;
+
+pub struct Synchronized {
+    pub revealed: Vec<String>,
+    pub previous: Previous,
+}
+
 // Synchronization
-pub fn synchronize(settings: &mut Settings) -> io::Result<Vec<String>> {
+pub fn synchronize(settings: &mut Settings) -> io::Result<Synchronized> {
     let icons = notify_icons::read_all()?;
     let entries = entries(&icons);
     let plan = engine::plan(
@@ -31,6 +38,7 @@ pub fn synchronize(settings: &mut Settings) -> io::Result<Vec<String>> {
         settings.mode,
         &settings.exceptions,
     );
+    let previous = previous_states(&icons, &plan.changes);
     notify_icons::apply(&plan.changes)?;
     let cleanup = if settings.mode == Mode::Off {
         Cleanup {
@@ -53,27 +61,45 @@ pub fn synchronize(settings: &mut Settings) -> io::Result<Vec<String>> {
         settings.missing_since = cleanup.missing_since;
         settings.save_state()?;
     }
-    Ok(plan
+    let revealed = plan
         .revealed
         .iter()
         .filter_map(|id| icons.iter().find(|icon| &icon.id == id))
         .map(|icon| display_name(&known_folders::resolve(&icon.executable_path)))
         .collect::<BTreeSet<_>>()
         .into_iter()
-        .collect())
+        .collect();
+    Ok(Synchronized { revealed, previous })
 }
 
-pub fn set_all(settings: &Settings, promoted: bool) -> io::Result<()> {
+pub fn set_all(settings: &Settings, promoted: bool) -> io::Result<Previous> {
     change(|entries| engine::set_all(entries, &settings.exceptions, promoted))
 }
 
-pub fn set_app(key: &str, promoted: bool) -> io::Result<()> {
+pub fn set_app(key: &str, promoted: bool) -> io::Result<Previous> {
     change(|entries| engine::set_key(entries, key, promoted))
 }
 
-fn change(plan: impl FnOnce(&[Entry]) -> Vec<Change>) -> io::Result<()> {
+pub fn restore(previous: &Previous) -> io::Result<()> {
+    notify_icons::restore(previous)
+}
+
+fn change(plan: impl FnOnce(&[Entry]) -> Vec<Change>) -> io::Result<Previous> {
     let icons = notify_icons::read_all()?;
-    notify_icons::apply(&plan(&entries(&icons)))
+    let changes = plan(&entries(&icons));
+    let previous = previous_states(&icons, &changes);
+    notify_icons::apply(&changes)?;
+    Ok(previous)
+}
+
+fn previous_states(icons: &[NotifyIcon], changes: &[Change]) -> Previous {
+    changes
+        .iter()
+        .filter_map(|change| {
+            let icon = icons.iter().find(|icon| icon.id == change.id)?;
+            Some((icon.id.clone(), icon.promoted))
+        })
+        .collect()
 }
 
 fn entries(icons: &[NotifyIcon]) -> Vec<Entry> {

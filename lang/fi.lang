@@ -22,9 +22,14 @@ menu.language = Kieli
 menu.language.automatic = Automaattinen
 menu.autostart = Käynnistä Windowsin mukana
 menu.quit = Lopeta
+menu.undo = Kumoa viimeisin muutos
+menu.check_updates = Tarkista päivitykset
+menu.update_available = Lataa versio {version}
 
 notification.revealed.title = Kuvake näytetään
 notification.revealed.one = {name} näkyy nyt tehtäväpalkissa.
 notification.revealed.many = Tehtäväpalkissa näkyy nyt {count} kuvaketta: {names}
 notification.already_running = TrayReveal on jo käynnissä. Avaa asetukset napsauttamalla sen kuvaketta hiiren kakkospainikkeella.
 notification.unavailable = Windowsin ilmaisinalueen kuvakeasetuksia ei voi lukea juuri nyt. TrayReveal ei muuta mitään, ennen kuin ne ovat taas käytettävissä.
+notification.update.title = Päivitys saatavilla
+notification.update.text = TrayReveal {version} on saatavilla. Lataa se avaamalla valikko.
