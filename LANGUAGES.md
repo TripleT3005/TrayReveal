@@ -22,11 +22,11 @@ Die Codes folgen [BCP 47](https://www.rfc-editor.org/info/bcp47): ISO-639-Sprach
 | `bg` | Bulgarian | Български | – |
 | `cs` | Czech | Čeština | – |
 | `da` | Danish | Dansk | – |
-| `de` | German | Deutsch | @TripleT3005 |
+| `de` | German | Deutsch | [@TripleT3005](https://github.com/TripleT3005) |
 | `de-AT` | German (Austria) | Deutsch (Österreich) | – |
 | `de-CH` | German (Switzerland) | Deutsch (Schweiz) | – |
 | `el` | Greek | Ελληνικά | – |
-| `en` | English | English | @TripleT3005 |
+| `en` | English | English | [@TripleT3005](https://github.com/TripleT3005) |
 | `es` | Spanish | Español | – |
 | `et` | Estonian | Eesti | – |
 | `fi` | Finnish | Suomi | – |
@@ -73,8 +73,8 @@ Die Codes folgen [BCP 47](https://www.rfc-editor.org/info/bcp47): ISO-639-Sprach
 
 | Code | Language | Name in the menu | Reviewed by |
 |---|---|---|---|
-| `de-x-amtsdt` | Officialese German (Amtsdeutsch) | Amtsdeutsch | @TripleT3005 |
-| `en-x-flipped` | Upside-down English | ɥsılƃuǝ uʍop-ǝpısdn | @TripleT3005 |
+| `de-x-amtsdt` | Officialese German (Amtsdeutsch) | Amtsdeutsch | [@TripleT3005](https://github.com/TripleT3005) |
+| `en-x-flipped` | Upside-down English | ɥsılƃuǝ uʍop-ǝpısdn | [@TripleT3005](https://github.com/TripleT3005) |
 | `en-x-lolcat` | LOLcat | LOLcat | – |
 | `en-x-piglatin` | Pig Latin | Igpay Atinlay | – |
 | `en-x-pirate` | Pirate English | Pirate English | – |
