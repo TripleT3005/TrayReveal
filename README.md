@@ -7,7 +7,14 @@
 A tiny tray app for Windows 11 that keeps your notification area icons visible.
 Windows 11 hides every new tray icon behind the `^` overflow menu and no longer offers the old "Always show all icons" checkbox. TrayReveal brings that convenience back: it watches the icon list of the current user and shows new icons right away – or all of them, if you prefer.
 
-> **Status:** early development, there is no release yet.
+> **Status:** early development; versions `0.x` are pre-releases for testing.
+
+### Installation
+1. Download `TrayReveal-<version>-windows-x64.zip` from [Releases](../../releases).
+2. Extract it, e.g. to `C:\Program Files\TrayReveal` (needs administrator rights once) or to any folder of your choice. Keep the `lang` folder next to `TrayReveal.exe`.
+3. Start `TrayReveal.exe`. The program is not signed, so SmartScreen may warn on the first start: "More info" → "Run anyway".
+
+Each archive has a `.sha256` file to verify the download, and the release notes link a VirusTotal scan.
 
 ### Usage
 Start `TrayReveal.exe`. On the first start it only remembers the icons that already exist and changes nothing. Right-click (or left-click) its tray icon for the menu:
@@ -46,6 +53,8 @@ TrayReveal is written in Rust and only depends on the official Windows API bindi
 cargo build --release
 ```
 
+A release is created automatically when a new version in `Cargo.toml` reaches `main`.
+
 ### License
 [MIT](LICENSE) – not affiliated with or endorsed by Microsoft. Windows is a trademark of the Microsoft group of companies.
 
@@ -54,7 +63,14 @@ cargo build --release
 Eine kleine Tray-App für Windows 11, die die Symbole im Infobereich sichtbar hält.
 Windows 11 versteckt jedes neue Tray-Icon hinter dem `^`-Überlaufmenü und bietet das frühere Häkchen „Immer alle Symbole anzeigen“ nicht mehr an. TrayReveal bringt diesen Komfort zurück: Es beobachtet die Icon-Liste des aktuellen Benutzers und blendet neue Icons sofort ein – oder auf Wunsch alle.
 
-> **Stand:** frühe Entwicklung, es gibt noch keine Veröffentlichung.
+> **Stand:** frühe Entwicklung; Versionen `0.x` sind Vorabversionen zum Testen.
+
+### Installation
+1. `TrayReveal-<Version>-windows-x64.zip` unter [Releases](../../releases) herunterladen.
+2. Entpacken, z. B. nach `C:\Program Files\TrayReveal` (braucht einmalig Administratorrechte) oder in einen beliebigen Ordner. Der Ordner `lang` bleibt neben `TrayReveal.exe`.
+3. `TrayReveal.exe` starten. Das Programm ist nicht signiert, deshalb warnt SmartScreen beim ersten Start eventuell: „Weitere Informationen“ → „Trotzdem ausführen“.
+
+Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die Release-Notizen verlinken einen VirusTotal-Scan.
 
 ### Bedienung
 `TrayReveal.exe` starten. Beim ersten Start merkt es sich nur die bereits vorhandenen Icons und ändert nichts. Ein Rechtsklick (oder Linksklick) auf das Tray-Icon öffnet das Menü:
@@ -92,6 +108,8 @@ TrayReveal ist in Rust geschrieben und hängt nur von den offiziellen Windows-AP
 ```
 cargo build --release
 ```
+
+Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet.
 
 ### Lizenz
 [MIT](LICENSE) – keine Verbindung zu Microsoft und nicht von Microsoft unterstützt. Windows ist eine Marke der Microsoft-Unternehmensgruppe.
