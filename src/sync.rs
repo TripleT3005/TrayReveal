@@ -18,6 +18,7 @@ pub struct App {
     pub key: String,
     pub name: String,
     pub tooltip: String,
+    pub snapshot: Vec<u8>,
 }
 
 // Synchronization
@@ -118,6 +119,7 @@ pub fn installed_apps() -> io::Result<Vec<App>> {
             name: display_name(&path),
             key: icon.key,
             tooltip: icon.tooltip,
+            snapshot: icon.snapshot,
         });
     }
     apps.sort_by_cached_key(|app| (app.name.to_lowercase(), app.tooltip.to_lowercase()));

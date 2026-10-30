@@ -7,6 +7,7 @@ mod file_info;
 mod i18n;
 #[cfg(test)]
 mod icon;
+mod icon_snapshot;
 mod identity;
 mod instance;
 mod known_folders;

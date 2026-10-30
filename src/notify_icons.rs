@@ -15,6 +15,7 @@ const IS_PROMOTED: &str = "IsPromoted";
 const INITIAL_TOOLTIP: &str = "InitialTooltip";
 const ICON_GUID: &str = "IconGuid";
 const UID: &str = "UID";
+const ICON_SNAPSHOT: &str = "IconSnapshot";
 
 // Types
 #[derive(Clone, Debug)]
@@ -25,6 +26,7 @@ pub struct NotifyIcon {
     pub key: String,
     pub promoted: Option<bool>,
     pub updated: u64,
+    pub snapshot: Vec<u8>,
 }
 
 impl NotifyIcon {
@@ -60,6 +62,7 @@ pub fn read_all() -> io::Result<Vec<NotifyIcon>> {
             key: identity_key(&executable_path, slot.as_deref()),
             promoted: key.dword(IS_PROMOTED).map(|value| value != 0),
             updated: key.last_write_time(),
+            snapshot: key.binary(ICON_SNAPSHOT).unwrap_or_default(),
             tooltip: key
                 .string(INITIAL_TOOLTIP)
                 .unwrap_or_default()
