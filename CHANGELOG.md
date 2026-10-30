@@ -4,6 +4,18 @@ All notable changes to TrayReveal, grouped by version in the style of [Keep a Ch
 
 Alle wichtigen Änderungen an TrayReveal, gegliedert nach Version im Stil von [Keep a Changelog](https://keepachangelog.com/de/). Der Abschnitt einer Version wird als ihre Release-Notizen verwendet.
 
+## [1.1.2] – 2026-10-31
+
+### English
+
+#### Fixed
+- The hint in the exception list now speaks of marked apps instead of checked icons, matching the red cross.
+
+### Deutsch
+
+#### Behoben
+- Der Hinweis in der Ausnahmeliste spricht jetzt von markierten Apps statt von angehakten Icons, passend zum roten X.
+
 ## [1.1.1] – 2026-10-31
 
 ### English
