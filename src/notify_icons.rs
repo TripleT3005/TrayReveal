@@ -1,6 +1,8 @@
 use std::io;
 
-use windows_sys::Win32::System::Registry::{HKEY_CURRENT_USER, KEY_READ, KEY_SET_VALUE};
+use windows_sys::Win32::System::Registry::{
+    HKEY_CURRENT_USER, KEY_ALL_ACCESS, KEY_READ, KEY_SET_VALUE,
+};
 
 use crate::engine::{Change, Entry};
 use crate::identity::identity_key;
@@ -22,6 +24,7 @@ pub struct NotifyIcon {
     pub tooltip: String,
     pub key: String,
     pub promoted: Option<bool>,
+    pub updated: u64,
 }
 
 impl NotifyIcon {
@@ -30,6 +33,7 @@ impl NotifyIcon {
             id: self.id.clone(),
             key: self.key.clone(),
             promoted: self.promoted,
+            updated: self.updated,
         }
     }
 }
@@ -55,6 +59,7 @@ pub fn read_all() -> io::Result<Vec<NotifyIcon>> {
         icons.push(NotifyIcon {
             key: identity_key(&executable_path, slot.as_deref()),
             promoted: key.dword(IS_PROMOTED).map(|value| value != 0),
+            updated: key.last_write_time(),
             tooltip: key
                 .string(INITIAL_TOOLTIP)
                 .unwrap_or_default()
@@ -81,6 +86,20 @@ pub fn apply(changes: &[Change]) -> io::Result<()> {
         if let Err(error) = result
             && error.kind() != io::ErrorKind::NotFound
         {
+            last_error = Some(error);
+        }
+    }
+    last_error.map_or(Ok(()), Err)
+}
+
+pub fn delete(ids: &[String]) -> io::Result<()> {
+    if ids.is_empty() {
+        return Ok(());
+    }
+    let settings = RegistryKey::open(HKEY_CURRENT_USER, SETTINGS_PATH, KEY_ALL_ACCESS)?;
+    let mut last_error = None;
+    for id in ids {
+        if let Err(error) = settings.delete_subkey(id) {
             last_error = Some(error);
         }
     }

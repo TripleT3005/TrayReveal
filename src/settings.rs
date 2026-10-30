@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::io;
 
 use windows_sys::Win32::System::Registry::{HKEY_CURRENT_USER, KEY_READ, KEY_WRITE};
@@ -13,6 +13,7 @@ const NOTIFICATIONS: &str = "Notifications";
 const LANGUAGE: &str = "Language";
 const EXCEPTIONS: &str = "Exceptions";
 const KNOWN_ICONS: &str = "KnownIcons";
+const MISSING_ICONS: &str = "MissingIcons";
 
 // Settings
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -22,6 +23,7 @@ pub struct Settings {
     pub language: Option<String>,
     pub exceptions: BTreeSet<String>,
     pub known: Option<BTreeSet<String>>,
+    pub missing_since: BTreeMap<String, u64>,
 }
 
 impl Default for Settings {
@@ -32,6 +34,7 @@ impl Default for Settings {
             language: None,
             exceptions: BTreeSet::new(),
             known: None,
+            missing_since: BTreeMap::new(),
         }
     }
 }
@@ -59,6 +62,12 @@ impl Settings {
             known: key
                 .multi_string(KNOWN_ICONS)
                 .map(|ids| ids.into_iter().collect()),
+            missing_since: key
+                .multi_string(MISSING_ICONS)
+                .unwrap_or_default()
+                .iter()
+                .filter_map(|item| parse_missing(item))
+                .collect(),
         }
     }
 
@@ -74,14 +83,20 @@ impl Settings {
             EXCEPTIONS,
             &self.exceptions.iter().cloned().collect::<Vec<_>>(),
         )?;
-        self.save_known_with(&key)
+        self.save_state_with(&key)
     }
 
-    pub fn save_known(&self) -> io::Result<()> {
-        self.save_known_with(&open_for_writing()?)
+    pub fn save_state(&self) -> io::Result<()> {
+        self.save_state_with(&open_for_writing()?)
     }
 
-    fn save_known_with(&self, key: &RegistryKey) -> io::Result<()> {
+    fn save_state_with(&self, key: &RegistryKey) -> io::Result<()> {
+        let missing: Vec<String> = self
+            .missing_since
+            .iter()
+            .map(|(id, since)| format!("{id}={since}"))
+            .collect();
+        key.set_multi_string(MISSING_ICONS, &missing)?;
         match &self.known {
             Some(known) => {
                 key.set_multi_string(KNOWN_ICONS, &known.iter().cloned().collect::<Vec<_>>())
@@ -89,6 +104,11 @@ impl Settings {
             None => key.delete_value(KNOWN_ICONS),
         }
     }
+}
+
+fn parse_missing(item: &str) -> Option<(String, u64)> {
+    let (id, since) = item.split_once('=')?;
+    Some((id.to_owned(), since.parse().ok()?))
 }
 
 fn open_for_writing() -> io::Result<RegistryKey> {
@@ -116,6 +136,13 @@ fn mode_to_value(mode: Mode) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parses_missing_icons() {
+        assert_eq!(parse_missing("123=456"), Some(("123".to_owned(), 456)));
+        assert_eq!(parse_missing("123"), None);
+        assert_eq!(parse_missing("123=x"), None);
+    }
 
     #[test]
     fn maps_every_mode() {
