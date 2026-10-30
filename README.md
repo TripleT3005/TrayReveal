@@ -84,7 +84,7 @@ cargo build --release
 
 For tests, `cargo run --example tray_probe -- "Probe" 60` shows a test tray icon for 60 seconds. Copied into folders such as `app-1.0.0` and `app-1.0.1`, it simulates app updates.
 
-A release is created automatically when a new version in `Cargo.toml` reaches `main`.
+A release is created automatically when a new version in `Cargo.toml` reaches `main`. Each version needs a section with English and German notes in [CHANGELOG.md](CHANGELOG.md), which becomes the release notes; tests and pipeline fail without it.
 
 ### License
 [MIT](LICENSE) – not affiliated with or endorsed by Microsoft. Windows is a trademark of the Microsoft group of companies.
@@ -171,7 +171,7 @@ cargo build --release
 
 Für Tests zeigt `cargo run --example tray_probe -- "Probe" 60` für 60 Sekunden ein Test-Tray-Icon an. In Ordner wie `app-1.0.0` und `app-1.0.1` kopiert, simuliert es App-Updates.
 
-Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet.
+Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet. Jede Version braucht einen Abschnitt mit englischen und deutschen Notizen in [CHANGELOG.md](CHANGELOG.md), der zu den Release-Notizen wird; ohne ihn schlagen Tests und Pipeline fehl.
 
 ### Lizenz
 [MIT](LICENSE) – keine Verbindung zu Microsoft und nicht von Microsoft unterstützt. Windows ist eine Marke der Microsoft-Unternehmensgruppe.

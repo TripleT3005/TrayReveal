@@ -2,6 +2,8 @@
 
 mod app;
 mod autostart;
+#[cfg(test)]
+mod changelog;
 mod engine;
 mod file_info;
 mod i18n;
