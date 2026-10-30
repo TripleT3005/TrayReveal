@@ -12,9 +12,9 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     DestroyWindow, DispatchMessageW, FindWindowW, GetCursorPos, GetMessageW, HMENU, KillTimer,
     MF_BYCOMMAND, MF_CHECKED, MF_GRAYED, MF_POPUP, MF_SEPARATOR, MF_STRING, MSG,
     PBT_APMRESUMEAUTOMATIC, PostMessageW, PostQuitMessage, RegisterClassExW,
-    RegisterWindowMessageW, SetForegroundWindow, SetTimer, TPM_NONOTIFY, TPM_RETURNCMD,
-    TPM_RIGHTBUTTON, TrackPopupMenu, TranslateMessage, WM_APP, WM_CONTEXTMENU, WM_DESTROY, WM_NULL,
-    WM_POWERBROADCAST, WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
+    RegisterWindowMessageW, SetForegroundWindow, SetTimer, TPM_LAYOUTRTL, TPM_NONOTIFY,
+    TPM_RETURNCMD, TPM_RIGHTBUTTON, TrackPopupMenu, TranslateMessage, WM_APP, WM_CONTEXTMENU,
+    WM_DESTROY, WM_NULL, WM_POWERBROADCAST, WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
 };
 
 use crate::autostart;
@@ -74,6 +74,7 @@ struct MenuModel {
     languages: Vec<Language>,
     apps: Vec<InstalledApp>,
     exceptions: Vec<bool>,
+    right_to_left: bool,
 }
 
 struct MenuTexts {
@@ -413,6 +414,7 @@ impl State {
                 .map(|app| self.settings.exceptions.contains(&app.key))
                 .collect(),
             apps,
+            right_to_left: self.translations.is_right_to_left(),
         }
     }
 }
@@ -429,13 +431,18 @@ fn show_menu(window: HWND) {
     let Some(menu) = build_menu(&model) else {
         return;
     };
+    let direction = if model.right_to_left {
+        TPM_LAYOUTRTL
+    } else {
+        0
+    };
     let mut point = POINT { x: 0, y: 0 };
     let command = unsafe {
         GetCursorPos(&raw mut point);
         SetForegroundWindow(window);
         let command = TrackPopupMenu(
             menu.0,
-            TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY,
+            TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY | direction,
             point.x,
             point.y,
             0,

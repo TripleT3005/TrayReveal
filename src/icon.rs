@@ -1,7 +1,7 @@
 // Constants
 const VIEWBOX: f32 = 64.0;
 const CIRCLE_RADIUS: f32 = 31.0;
-const BACKGROUND: [f32; 3] = [0.0, 120.0, 212.0];
+const BACKGROUND: [f32; 3] = [47.0, 107.0, 78.0];
 const FOREGROUND: [f32; 3] = [255.0, 255.0, 255.0];
 const CHEVRON_WIDTH: f32 = 8.0;
 const BAR_WIDTH: f32 = 6.0;
@@ -94,10 +94,10 @@ mod tests {
         let pixels = icon_pixels(64);
         assert_eq!(pixels.len(), 64 * 64 * 4);
         assert_eq!(pixel(&pixels, 64, 0, 0), [0, 0, 0, 0]);
-        assert_eq!(pixel(&pixels, 64, 32, 8), [0, 120, 212, 255]);
+        assert_eq!(pixel(&pixels, 64, 32, 8), [47, 107, 78, 255]);
         assert_eq!(pixel(&pixels, 64, 32, 22), [255, 255, 255, 255]);
         assert_eq!(pixel(&pixels, 64, 32, 44), [255, 255, 255, 255]);
-        assert_eq!(pixel(&pixels, 64, 32, 38), [0, 120, 212, 255]);
+        assert_eq!(pixel(&pixels, 64, 32, 38), [47, 107, 78, 255]);
     }
 
     #[test]
