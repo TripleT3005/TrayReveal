@@ -23,7 +23,7 @@ Start `TrayReveal.exe`. On the first start it only remembers the icons that alre
 - **Show new icons** (default) – every new icon is shown once; if you hide it later in the Windows Settings, it stays hidden
 - **Always show all icons** – keeps every icon visible, except the exceptions
 - **Show all icons now / Hide all icons now** – one-time actions; hiding is not available while all icons are always shown
-- **Exceptions** – checked apps always stay hidden; unchecking shows the app again (except in Off mode)
+- **Exceptions** – lists the apps with their icons; apps marked with a red cross always stay hidden, clicking them again shows them again (except in Off mode)
 - **Notify about new icons**, **Language**, **Start with Windows**, **Quit**
 
 The menu follows the light or dark mode of the taskbar.
@@ -89,7 +89,7 @@ Zu jedem Archiv gibt es eine `.sha256`-Datei zum Prüfen des Downloads, und die 
 - **Neue Icons einblenden** (Standard) – jedes neue Icon wird einmal eingeblendet; blendest du es später in den Windows-Einstellungen aus, bleibt es ausgeblendet
 - **Immer alle Icons einblenden** – hält alle Icons sichtbar, außer den Ausnahmen
 - **Jetzt alle Icons einblenden / ausblenden** – einmalige Aktionen; Ausblenden ist nicht verfügbar, solange immer alle Icons eingeblendet werden
-- **Ausnahmen** – angehakte Apps bleiben immer ausgeblendet; ohne Haken wird die App wieder eingeblendet (außer im Modus „Aus“)
+- **Ausnahmen** – listet die Apps mit ihren Icons; mit rotem X markierte Apps bleiben immer ausgeblendet, ein erneuter Klick blendet sie wieder ein (außer im Modus „Aus“)
 - **Hinweis bei neuen Icons**, **Sprache**, **Mit Windows starten**, **Beenden**
 
 Das Menü folgt dem hellen oder dunklen Modus der Taskleiste.

@@ -9,17 +9,19 @@ use windows_sys::Win32::System::LibraryLoader::GetModuleHandleW;
 use windows_sys::Win32::UI::Shell::NIN_SELECT;
 use windows_sys::Win32::UI::WindowsAndMessaging::{
     AppendMenuW, CheckMenuRadioItem, CreatePopupMenu, CreateWindowExW, DefWindowProcW, DestroyMenu,
-    DestroyWindow, DispatchMessageW, FindWindowW, GetCursorPos, GetMessageW, HMENU, KillTimer,
-    MF_BYCOMMAND, MF_CHECKED, MF_GRAYED, MF_POPUP, MF_SEPARATOR, MF_STRING, MSG,
-    PBT_APMRESUMEAUTOMATIC, PostMessageW, PostQuitMessage, RegisterClassExW,
-    RegisterWindowMessageW, SetForegroundWindow, SetTimer, TPM_LAYOUTRTL, TPM_NONOTIFY,
-    TPM_RETURNCMD, TPM_RIGHTBUTTON, TrackPopupMenu, TranslateMessage, WM_APP, WM_CONTEXTMENU,
-    WM_DESTROY, WM_NULL, WM_POWERBROADCAST, WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
+    DestroyWindow, DispatchMessageW, FindWindowW, GetCursorPos, GetMessageW, GetSystemMetrics,
+    HMENU, KillTimer, MENUITEMINFOW, MF_BYCOMMAND, MF_CHECKED, MF_GRAYED, MF_POPUP, MF_SEPARATOR,
+    MF_STRING, MIIM_BITMAP, MSG, PBT_APMRESUMEAUTOMATIC, PostMessageW, PostQuitMessage,
+    RegisterClassExW, RegisterWindowMessageW, SM_CXSMICON, SetForegroundWindow, SetMenuItemInfoW,
+    SetTimer, TPM_LAYOUTRTL, TPM_NONOTIFY, TPM_RETURNCMD, TPM_RIGHTBUTTON, TrackPopupMenu,
+    TranslateMessage, WM_APP, WM_CONTEXTMENU, WM_DESTROY, WM_NULL, WM_POWERBROADCAST,
+    WM_SETTINGCHANGE, WM_TIMER, WNDCLASSEXW, WS_OVERLAPPED,
 };
 
 use crate::autostart;
 use crate::engine::Mode;
 use crate::i18n::{self, Language, Translations};
+use crate::icon_snapshot::{self, MenuBitmap};
 use crate::settings::Settings;
 use crate::sync::{self, App as InstalledApp};
 use crate::theme;
@@ -428,7 +430,8 @@ fn show_menu(window: HWND) {
     let Some(model) = with_state(|state| state.menu_model()) else {
         return;
     };
-    let Some(menu) = build_menu(&model) else {
+    let mut bitmaps = Vec::new();
+    let Some(menu) = build_menu(&model, &mut bitmaps) else {
         return;
     };
     let direction = if model.right_to_left {
@@ -465,7 +468,7 @@ fn show_menu(window: HWND) {
     }
 }
 
-fn build_menu(model: &MenuModel) -> Option<Menu> {
+fn build_menu(model: &MenuModel, bitmaps: &mut Vec<MenuBitmap>) -> Option<Menu> {
     let menu = new_menu()?;
     let texts = &model.texts;
     append(&menu, MF_STRING, ID_MODE_OFF, &texts.mode_off);
@@ -487,7 +490,7 @@ fn build_menu(model: &MenuModel) -> Option<Menu> {
         MF_STRING
     };
     append(&menu, hide_flags, ID_HIDE_ALL, &texts.hide_all);
-    append_submenu(&menu, exceptions_menu(model)?, &texts.exceptions);
+    append_submenu(&menu, exceptions_menu(model, bitmaps)?, &texts.exceptions);
     separator(&menu);
     append(
         &menu,
@@ -507,7 +510,7 @@ fn build_menu(model: &MenuModel) -> Option<Menu> {
     Some(menu)
 }
 
-fn exceptions_menu(model: &MenuModel) -> Option<Menu> {
+fn exceptions_menu(model: &MenuModel, bitmaps: &mut Vec<MenuBitmap>) -> Option<Menu> {
     let menu = new_menu()?;
     if model.apps.is_empty() {
         append(&menu, MF_GRAYED, 0, &model.texts.exceptions_empty);
@@ -516,9 +519,16 @@ fn exceptions_menu(model: &MenuModel) -> Option<Menu> {
     append(&menu, MF_GRAYED, 0, &model.texts.exceptions_hint);
     separator(&menu);
     let labels = app_labels(&model.apps);
+    let icon_size = unsafe { GetSystemMetrics(SM_CXSMICON) };
     for (index, (label, &excepted)) in labels.iter().zip(&model.exceptions).enumerate() {
         let id = ID_EXCEPTION_FIRST + u32::try_from(index).ok()?;
         append(&menu, checked(excepted), id, label);
+        if let Some(bitmap) =
+            icon_snapshot::menu_bitmap(&model.apps[index].snapshot, icon_size, excepted)
+        {
+            set_item_bitmap(&menu, id, &bitmap);
+            bitmaps.push(bitmap);
+        }
     }
     Some(menu)
 }
@@ -605,6 +615,18 @@ fn append_submenu(menu: &Menu, submenu: Menu, text: &str) {
     }
 }
 
+fn set_item_bitmap(menu: &Menu, id: u32, bitmap: &MenuBitmap) {
+    let info = MENUITEMINFOW {
+        cbSize: u32::try_from(mem::size_of::<MENUITEMINFOW>()).unwrap_or(0),
+        fMask: MIIM_BITMAP,
+        hbmpItem: bitmap.handle(),
+        ..unsafe { mem::zeroed() }
+    };
+    unsafe {
+        SetMenuItemInfoW(menu.0, id, 0, &raw const info);
+    }
+}
+
 fn separator(menu: &Menu) {
     unsafe {
         AppendMenuW(menu.0, MF_SEPARATOR, 0, ptr::null());
@@ -633,6 +655,7 @@ mod tests {
             key: format!("{name}|{tooltip}"),
             name: name.into(),
             tooltip: tooltip.into(),
+            snapshot: Vec::new(),
         }
     }
 

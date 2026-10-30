@@ -5,9 +5,10 @@ use windows_sys::Win32::Foundation::{
     ERROR_FILE_NOT_FOUND, ERROR_MORE_DATA, ERROR_SUCCESS, FILETIME, WIN32_ERROR,
 };
 use windows_sys::Win32::System::Registry::{
-    HKEY, REG_DWORD, REG_EXPAND_SZ, REG_MULTI_SZ, REG_OPTION_NON_VOLATILE, REG_SAM_FLAGS, REG_SZ,
-    REG_VALUE_TYPE, RegCloseKey, RegCreateKeyExW, RegDeleteKeyW, RegDeleteTreeW, RegDeleteValueW,
-    RegEnumKeyExW, RegOpenKeyExW, RegQueryInfoKeyW, RegQueryValueExW, RegSetValueExW,
+    HKEY, REG_BINARY, REG_DWORD, REG_EXPAND_SZ, REG_MULTI_SZ, REG_OPTION_NON_VOLATILE,
+    REG_SAM_FLAGS, REG_SZ, REG_VALUE_TYPE, RegCloseKey, RegCreateKeyExW, RegDeleteKeyW,
+    RegDeleteTreeW, RegDeleteValueW, RegEnumKeyExW, RegOpenKeyExW, RegQueryInfoKeyW,
+    RegQueryValueExW, RegSetValueExW,
 };
 
 use crate::wide::{from_wide, to_wide, units_from_bytes};
@@ -126,6 +127,11 @@ impl RegistryKey {
     pub fn string(&self, name: &str) -> Option<String> {
         let (kind, data) = self.query(name)?;
         (kind == REG_SZ || kind == REG_EXPAND_SZ).then(|| from_wide(&units_from_bytes(&data)))
+    }
+
+    pub fn binary(&self, name: &str) -> Option<Vec<u8>> {
+        let (kind, data) = self.query(name)?;
+        (kind == REG_BINARY).then_some(data)
     }
 
     pub fn dword(&self, name: &str) -> Option<u32> {
