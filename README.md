@@ -122,7 +122,7 @@ Einstellungen wie Modus oder Sprache gelten pro Benutzer und werden vom Installe
 ### Bedienung
 `TrayReveal.exe` starten. Beim ersten Start merkt es sich nur die bereits vorhandenen Icons und ändert nichts. Ein Rechtsklick (oder Linksklick) auf das Tray-Icon öffnet das Menü:
 
-![Das Kontextmenü von TrayReveal](docs/menu.png)
+![Das Kontextmenü von TrayReveal](docs/menu-de.png)
 
 - **Aus** – nur beobachten, nichts ändern
 - **Neue Icons einblenden** (Standard) – jedes neue Icon wird einmal eingeblendet; blendest du es später in den Windows-Einstellungen aus, bleibt es ausgeblendet
