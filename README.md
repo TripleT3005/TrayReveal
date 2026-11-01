@@ -1,4 +1,4 @@
-# <img src="docs/logo.svg" alt="" width="40" height="40" align="center"> TrayReveal
+# <img src="assets/icons/icon.svg" alt="" width="40" height="40" align="center"> TrayReveal
 
 <!-- web:skip -->
 [English](#english) · [Deutsch](#deutsch)
@@ -100,6 +100,8 @@ cargo build --release
 ```
 
 For tests, `cargo run --example tray_probe -- "Probe" 60` shows a test tray icon for 60 seconds. Copied into folders such as `app-1.0.0` and `app-1.0.1`, it simulates app updates.
+
+The icons in [`assets/icons`](assets/icons) (ICO and PNG in all common sizes) are generated from `icon.svg` with [`render-icons.mjs`](https://github.com/TripleT3005/TripleT3005/blob/main/scripts/render-icons.mjs), which needs Node.js and Edge or Chrome: `node render-icons.mjs assets/icons`. The program, the setup and the release announcement take their icon from there.
 
 A release is created automatically when a new version in `Cargo.toml` reaches `main`. Each version needs a section with English and German notes in [CHANGELOG.md](CHANGELOG.md), which becomes the release notes; tests and pipeline fail without it.
 
@@ -204,6 +206,8 @@ cargo build --release
 ```
 
 Für Tests zeigt `cargo run --example tray_probe -- "Probe" 60` für 60 Sekunden ein Test-Tray-Icon an. In Ordner wie `app-1.0.0` und `app-1.0.1` kopiert, simuliert es App-Updates.
+
+Die Icons in [`assets/icons`](assets/icons) (ICO und PNG in allen gängigen Größen) entstehen aus `icon.svg` mit [`render-icons.mjs`](https://github.com/TripleT3005/TripleT3005/blob/main/scripts/render-icons.mjs), das Node.js und Edge oder Chrome braucht: `node render-icons.mjs assets/icons`. Programm, Setup und Release-Ankündigung nehmen ihr Icon von dort.
 
 Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet. Jede Version braucht einen Abschnitt mit englischen und deutschen Notizen in [CHANGELOG.md](CHANGELOG.md), der zu den Release-Notizen wird; ohne ihn schlagen Tests und Pipeline fehl.
 

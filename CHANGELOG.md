@@ -4,6 +4,18 @@ All notable changes to TrayReveal, grouped by version in the style of [Keep a Ch
 
 Alle wichtigen Änderungen an TrayReveal, gegliedert nach Version im Stil von [Keep a Changelog](https://keepachangelog.com/de/). Der Abschnitt einer Version wird als ihre Release-Notizen verwendet.
 
+## [1.1.3] – 2026-11-01
+
+### English
+
+#### Fixed
+- The setup shows the TrayReveal icon instead of the generic installer icon.
+
+### Deutsch
+
+#### Behoben
+- Das Setup zeigt das TrayReveal-Icon statt des allgemeinen Installer-Icons.
+
 ## [1.1.2] – 2026-10-31
 
 ### English
