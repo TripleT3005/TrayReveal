@@ -1,13 +1,9 @@
-#[path = "src/icon.rs"]
-#[allow(dead_code)]
-mod icon;
-
 use std::env;
 use std::fs;
 use std::path::PathBuf;
 
 // Constants
-const ICON_SIZES: [u16; 8] = [16, 20, 24, 32, 40, 48, 64, 256];
+const ICON_FILE: &str = "assets/icons/icon.ico";
 const RT_ICON: u16 = 3;
 const RT_GROUP_ICON: u16 = 14;
 const RT_VERSION: u16 = 16;
@@ -47,7 +43,7 @@ const MANIFEST: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?
 // Build
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=src/icon.rs");
+    println!("cargo:rerun-if-changed={ICON_FILE}");
     println!("cargo:rerun-if-changed=Cargo.toml");
     let is_windows = env::var("CARGO_CFG_TARGET_OS").is_ok_and(|os| os == "windows");
     let is_msvc = env::var("CARGO_CFG_TARGET_ENV").is_ok_and(|target_env| target_env == "msvc");
@@ -65,20 +61,17 @@ fn main() {
 fn resources() -> Vec<u8> {
     let mut file = Vec::new();
     push_resource(&mut file, 0, 0, &[], 0, 0);
+    let images = icon_images();
     let mut group = Vec::new();
     push_u16(&mut group, 0);
     push_u16(&mut group, 1);
-    push_u16(&mut group, u16::try_from(ICON_SIZES.len()).unwrap_or(0));
-    for (index, size) in ICON_SIZES.into_iter().enumerate() {
+    push_u16(&mut group, u16::try_from(images.len()).unwrap_or(0));
+    for (index, (header, image)) in images.iter().enumerate() {
         let id = u16::try_from(index + 1).unwrap_or(u16::MAX);
-        let image = icon_image(size);
-        let dimension = u8::try_from(size).unwrap_or(0);
-        group.extend_from_slice(&[dimension, dimension, 0, 0]);
-        push_u16(&mut group, 1);
-        push_u16(&mut group, 32);
+        group.extend_from_slice(header);
         push_u32(&mut group, u32::try_from(image.len()).unwrap_or(0));
         push_u16(&mut group, id);
-        push_resource(&mut file, RT_ICON, id, &image, MEMORY_FLAGS, LANGUAGE_EN_US);
+        push_resource(&mut file, RT_ICON, id, image, MEMORY_FLAGS, LANGUAGE_EN_US);
     }
     push_resource(
         &mut file,
@@ -122,29 +115,37 @@ fn push_resource(file: &mut Vec<u8>, kind: u16, id: u16, data: &[u8], flags: u16
     align(file);
 }
 
-fn icon_image(size: u16) -> Vec<u8> {
-    let rgba = icon::icon_pixels(size);
-    let width = usize::from(size);
-    let mask_row = width.div_ceil(32) * 4;
-    let mut image = Vec::new();
-    push_u32(&mut image, 40);
-    push_u32(&mut image, u32::from(size));
-    push_u32(&mut image, u32::from(size) * 2);
-    push_u16(&mut image, 1);
-    push_u16(&mut image, 32);
-    push_u32(&mut image, 0);
-    push_u32(
-        &mut image,
-        u32::try_from(width * width * 4 + mask_row * width).unwrap_or(0),
-    );
-    image.extend_from_slice(&[0; 16]);
-    for row in rgba.chunks(width * 4).rev() {
-        for pixel in row.chunks(4) {
-            image.extend_from_slice(&[pixel[2], pixel[1], pixel[0], pixel[3]]);
-        }
-    }
-    image.resize(image.len() + mask_row * width, 0);
-    image
+// Icon
+fn icon_images() -> Vec<([u8; 8], Vec<u8>)> {
+    let file = fs::read(ICON_FILE).expect("reading the icon file failed");
+    let read_u32 = |offset: usize| {
+        let bytes = file
+            .get(offset..offset + 4)
+            .and_then(|bytes| <[u8; 4]>::try_from(bytes).ok())
+            .expect("the icon file is truncated");
+        usize::try_from(u32::from_le_bytes(bytes)).expect("the icon file is too large")
+    };
+    let count = file
+        .get(4..6)
+        .map(|bytes| usize::from(u16::from_le_bytes([bytes[0], bytes[1]])))
+        .expect("the icon file has no header");
+    assert!(count > 0, "the icon file contains no images");
+    (0..count)
+        .map(|index| {
+            let entry = 6 + index * 16;
+            let mut header = [0; 8];
+            header.copy_from_slice(
+                file.get(entry..entry + 8)
+                    .expect("the icon file is truncated"),
+            );
+            let (length, offset) = (read_u32(entry + 8), read_u32(entry + 12));
+            let image = file
+                .get(offset..offset + length)
+                .expect("the icon file is truncated")
+                .to_vec();
+            (header, image)
+        })
+        .collect()
 }
 
 // Version
