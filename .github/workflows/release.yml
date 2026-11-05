@@ -45,11 +45,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          exists=false
           if gh release view "${{ steps.version.outputs.tag }}" --repo "${{ github.repository }}" > /dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            exists=true
           fi
+          if [ "$exists" = false ] && awk '/^## \[Unreleased\]/ { found = 1; next } /^## \[/ { found = 0 } found && NF' CHANGELOG.md | grep -q .; then
+            echo "::error::CHANGELOG.md still has entries under [Unreleased]; move them into the section for ${{ steps.version.outputs.version }}"
+            exit 1
+          fi
+          echo "exists=$exists" >> "$GITHUB_OUTPUT"
 
   build:
     needs: version
