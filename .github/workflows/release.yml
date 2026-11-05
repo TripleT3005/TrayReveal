@@ -64,6 +64,9 @@ jobs:
       - name: Build
         run: cargo build --release --locked
 
+      - name: Collect third-party licenses
+        run: python scripts/third_party_licenses.py --title TrayReveal --platform x86_64-pc-windows-msvc --rust-std --output THIRD-PARTY-LICENSES.txt
+
       - name: Package
         shell: bash
         run: |
@@ -71,7 +74,7 @@ jobs:
           mkdir -p "dist/$name"
           cp target/release/trayreveal.exe "dist/$name/TrayReveal.exe"
           cp -R lang "dist/$name/lang"
-          cp LICENSE README.md "dist/$name/"
+          cp LICENSE THIRD-PARTY-LICENSES.txt README.md "dist/$name/"
           cd dist
           7z a -tzip -bso0 "$name.zip" "$name"
           sha256sum "$name.zip" > "$name.zip.sha256"

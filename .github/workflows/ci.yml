@@ -32,3 +32,9 @@ jobs:
 
       - name: Build
         run: cargo build --release --locked
+
+      - name: Test license script
+        run: python -m unittest discover -s scripts
+
+      - name: Check third-party licenses
+        run: python scripts/third_party_licenses.py --platform x86_64-pc-windows-msvc --rust-std

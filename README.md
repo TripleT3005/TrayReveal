@@ -103,12 +103,16 @@ For tests, `cargo run --example tray_probe -- "Probe" 60` shows a test tray icon
 
 The icons in [`assets/icons`](assets/icons) (ICO and PNG in all common sizes) are generated from `icon.svg` with [`render-icons.mjs`](https://github.com/TripleT3005/TripleT3005/blob/main/scripts/render-icons.mjs), which needs Node.js and Edge or Chrome: `node render-icons.mjs assets/icons`. The program, the setup and the release announcement take their icon from there.
 
+The license list for releases is created with Python 3 (standard library only): `python scripts/third_party_licenses.py --rust-std --output THIRD-PARTY-LICENSES.txt`. The installer needs this file. `python -m unittest discover -s scripts` tests the script.
+
 A release is created automatically when a new version in `Cargo.toml` reaches `main`. Each version needs a section with English and German notes in [CHANGELOG.md](CHANGELOG.md), which becomes the release notes; tests and pipeline fail without it.
 
 <!-- /web:skip -->
 
 ### License
 [MIT](LICENSE)
+
+Release packages and the installer include `THIRD-PARTY-LICENSES.txt` with the licenses of all third-party components built into TrayReveal. The CI fails if a dependency uses a license that is not on the allow list in [`scripts/third_party_licenses.py`](scripts/third_party_licenses.py).
 
 ## Deutsch
 
@@ -209,9 +213,13 @@ Für Tests zeigt `cargo run --example tray_probe -- "Probe" 60` für 60 Sekunden
 
 Die Icons in [`assets/icons`](assets/icons) (ICO und PNG in allen gängigen Größen) entstehen aus `icon.svg` mit [`render-icons.mjs`](https://github.com/TripleT3005/TripleT3005/blob/main/scripts/render-icons.mjs), das Node.js und Edge oder Chrome braucht: `node render-icons.mjs assets/icons`. Programm, Setup und Release-Ankündigung nehmen ihr Icon von dort.
 
+Die Lizenzliste für Releases entsteht mit Python 3 (nur Standardbibliothek): `python scripts/third_party_licenses.py --rust-std --output THIRD-PARTY-LICENSES.txt`. Der Installer braucht diese Datei. `python -m unittest discover -s scripts` testet das Skript.
+
 Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet. Jede Version braucht einen Abschnitt mit englischen und deutschen Notizen in [CHANGELOG.md](CHANGELOG.md), der zu den Release-Notizen wird; ohne ihn schlagen Tests und Pipeline fehl.
 
 <!-- /web:skip -->
 
 ### Lizenz
 [MIT](LICENSE)
+
+Release-Pakete und Installer enthalten `THIRD-PARTY-LICENSES.txt` mit den Lizenzen aller Fremdkomponenten, die in TrayReveal eingebaut sind. Die CI schlägt fehl, wenn eine Abhängigkeit eine Lizenz verwendet, die nicht auf der Liste erlaubter Lizenzen in [`scripts/third_party_licenses.py`](scripts/third_party_licenses.py) steht.
