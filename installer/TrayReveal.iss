@@ -75,6 +75,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\target\release\trayreveal.exe"; DestDir: "{app}"; DestName: "{#AppExe}"; Flags: ignoreversion
 Source: "..\lang\*.lang"; DestDir: "{app}\lang"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\THIRD-PARTY-LICENSES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Shortcuts

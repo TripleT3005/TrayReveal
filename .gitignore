@@ -1,5 +1,7 @@
 # Build output
 /target/
+/THIRD-PARTY-LICENSES.txt
+__pycache__/
 
 # OS
 Thumbs.db
