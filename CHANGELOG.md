@@ -6,6 +6,16 @@ Alle wichtigen Änderungen an TrayReveal, gegliedert nach Version im Stil von [K
 
 ## [Unreleased]
 
+### English
+
+#### Added
+- Release packages and the setup include the licenses of all third-party components in `THIRD-PARTY-LICENSES.txt`.
+
+### Deutsch
+
+#### Neu
+- Release-Pakete und Setup enthalten die Lizenzen aller Fremdkomponenten in `THIRD-PARTY-LICENSES.txt`.
+
 ## [1.1.3] – 2026-11-01
 
 ### English
