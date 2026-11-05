@@ -393,6 +393,7 @@ def main(arguments=None):
     parser.add_argument("--output", type=Path)
     parser.add_argument("--rust-std", action="store_true")
     parser.add_argument("--source-note", action="append", default=[], metavar="CRATE=TEXT")
+    parser.add_argument("--append", action="append", default=[], type=Path, metavar="FILE")
     options = parser.parse_args(arguments)
 
     source_notes = dict(note.split("=", 1) for note in options.source_note)
@@ -407,7 +408,10 @@ def main(arguments=None):
 
     if options.output:
         options.output.parent.mkdir(parents=True, exist_ok=True)
-        options.output.write_text(render(options.title, sections, source_notes), encoding="utf-8", newline="\n")
+        report = render(options.title, sections, source_notes)
+        for appended in options.append:
+            report += "\n" + "=" * 72 + "\n\n" + read_text(appended)
+        options.output.write_text(report, encoding="utf-8", newline="\n")
     print(f"License check passed: {len(packages)} components")
     return 0
 
