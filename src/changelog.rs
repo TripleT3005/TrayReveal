@@ -4,6 +4,7 @@ use std::path::Path;
 // Constants
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const LANGUAGES: [&str; 2] = ["### English", "### Deutsch"];
+const UNRELEASED: &str = "Unreleased";
 
 // Sections
 fn section(changelog: &str, version: &str) -> Option<String> {
@@ -21,11 +22,31 @@ fn section(changelog: &str, version: &str) -> Option<String> {
     )
 }
 
+fn headings(changelog: &str) -> Vec<&str> {
+    changelog
+        .lines()
+        .filter_map(|line| line.strip_prefix("## ["))
+        .filter_map(|rest| rest.split(']').next())
+        .collect()
+}
+
+fn read_changelog() -> String {
+    fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("CHANGELOG.md"))
+        .expect("CHANGELOG.md exists")
+}
+
 // Tests
 #[test]
+fn changelog_starts_with_unreleased_then_current_version() {
+    let changelog = read_changelog();
+    let headings = headings(&changelog);
+    assert_eq!(headings.first(), Some(&UNRELEASED));
+    assert_eq!(headings.get(1), Some(&VERSION));
+}
+
+#[test]
 fn changelog_describes_the_current_version() {
-    let changelog = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("CHANGELOG.md"))
-        .expect("CHANGELOG.md exists");
+    let changelog = read_changelog();
     let section = section(&changelog, VERSION)
         .unwrap_or_else(|| panic!("CHANGELOG.md has no section for version {VERSION}"));
     for language in LANGUAGES {
