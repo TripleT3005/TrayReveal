@@ -107,6 +107,8 @@ The license list for releases is created with Python 3 (standard library only): 
 
 A release is created automatically when a new version in `Cargo.toml` reaches `main`. Each version needs a section with English and German notes in [CHANGELOG.md](CHANGELOG.md), which becomes the release notes; tests and pipeline fail without it.
 
+Dependabot updates of components built into TrayReveal are not entered in the changelog one by one, but collected in the section of the next version, in English and German, e.g. `Updated third-party components: windows-sys 0.61.3.` `python scripts/dependency_updates.py` lists them since the last release and suggests the entry. The release pipeline fails if one of them is missing from the section of the new version.
+
 <!-- /web:skip -->
 
 ### License
@@ -216,6 +218,8 @@ Die Icons in [`assets/icons`](assets/icons) (ICO und PNG in allen gängigen Grö
 Die Lizenzliste für Releases entsteht mit Python 3 (nur Standardbibliothek): `python scripts/third_party_licenses.py --rust-std --output THIRD-PARTY-LICENSES.txt`. Der Installer braucht diese Datei. `python -m unittest discover -s scripts` testet das Skript.
 
 Ein Release entsteht automatisch, sobald eine neue Version in `Cargo.toml` auf `main` landet. Jede Version braucht einen Abschnitt mit englischen und deutschen Notizen in [CHANGELOG.md](CHANGELOG.md), der zu den Release-Notizen wird; ohne ihn schlagen Tests und Pipeline fehl.
+
+Dependabot-Updates von Komponenten, die in TrayReveal eingebaut sind, kommen nicht einzeln in den Changelog, sondern gesammelt in den Abschnitt der nächsten Version, auf Englisch und Deutsch, z. B. `Fremdkomponenten aktualisiert: windows-sys 0.61.3.` `python scripts/dependency_updates.py` listet sie seit dem letzten Release auf und schlägt den Eintrag vor. Die Release-Pipeline schlägt fehl, wenn eines davon im Abschnitt der neuen Version fehlt.
 
 <!-- /web:skip -->
 
