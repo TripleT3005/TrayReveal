@@ -6,6 +6,8 @@ Alle wichtigen Änderungen an TrayReveal, gegliedert nach Version im Stil von [K
 
 ## [Unreleased]
 
+## [1.1.4] – 2026-11-24
+
 ### English
 
 #### Added
